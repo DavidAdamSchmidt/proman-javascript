@@ -52,20 +52,36 @@ export let dom = {
             boardContainer.insertAdjacentHTML('beforeend', outerHtml);
 
         }
-    },
 
+        const buttons = document.querySelectorAll('.board-add');
+
+        for (let button of buttons) {
+            button.addEventListener('click', (e) => dom.addCard(e));
+        }
+    },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
         dataHandler.getCardsByBoardId(boardId, function (cards) {
             dom.showCards(cards);
         });
     },
+    addCard: function (e) {
+        const cardContainer = e.target.parentElement.nextElementSibling.firstElementChild;
+        const newId = document.querySelectorAll('.card').length + 1;
+
+        const outerHTML = `
+        <div class="card">
+            <div class="card-remove" id="card-${newId}"><i class="fas fa-trash-alt"></i></div>
+            <div class="card-title">new card</div>
+        </div>`;
+
+        cardContainer.insertAdjacentHTML('beforeend', outerHTML)
+    },
     showCards: function (cards) {
         // shows the cards of a board
         // it adds necessary event listeners also
         for (let card of cards) {
 
-            console.log(card);
 
             const cardContainer = document.querySelector(`#board-${card.board_id} #column-${card.status_id}`);
             let outerHTML = `
