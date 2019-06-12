@@ -25,15 +25,35 @@ export let dom = {
 
         for (let board of boards) {
             let outerHtml = `
-            <section class="board">
+            <section class="board" id="board-${board.id}">
                 <div class="board-header"><span class="board-title">${board.title}</span>
                     <button class="board-add">Add Card</button>
                     <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
                 </div>
+                <div class="board-columns">
+                    <div class="board-column">
+                        <div class="board-column-title">New</div>
+                        <div class="board-column-content" id="column-new"></div>
+                    </div>
+                    <div class="board-column">
+                        <div class="board-column-title">In progress</div>
+                        <div class="board-column-content" id="column-in-progress"></div>
+                    </div>
+                    <div class="board-column">
+                        <div class="board-column-title">Testing</div>
+                        <div class="board-column-content" id="column-testing"></div>
+                    </div>
+                    <div class="board-column">
+                        <div class="board-column-title">Done</div>
+                        <div class="board-column-content" id="column-done"></div>
+                    </div>
+                </div>
             </section>`;
             boardContainer.insertAdjacentHTML('beforeend', outerHtml);
+
         }
     },
+
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
         dataHandler.getCardsByBoardId(boardId, function (cards) {
@@ -43,7 +63,19 @@ export let dom = {
     showCards: function (cards) {
         // shows the cards of a board
         // it adds necessary event listeners also
+        for (let card of cards) {
 
-    },
+            console.log(card);
+
+            const cardContainer = document.querySelector(`#board-${card.board_id} #column-${card.status_id}`);
+            let outerHTML = `
+            <div class="card">
+                <div class="card-remove" id="card-${card.id}"><i class="fas fa-trash-alt"></i></div>
+                <div class="card-title">${card.title}</div>
+            </div>`;
+
+            cardContainer.insertAdjacentHTML('beforeend', outerHTML)
+        }
+    }
     // here comes more features
 };
