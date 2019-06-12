@@ -67,6 +67,7 @@ export let dom = {
     },
     addCard: function (e) {
         const cardContainer = e.target.parentElement.nextElementSibling.firstElementChild;
+        const boardId = e.target.parentElement.parentElement.id;
         const newId = document.querySelectorAll('.card').length + 1;
 
         const outerHTML = `
@@ -75,7 +76,15 @@ export let dom = {
             <div class="card-title">new card</div>
         </div>`;
 
-        cardContainer.insertAdjacentHTML('beforeend', outerHTML)
+        cardContainer.insertAdjacentHTML('beforeend', outerHTML);
+
+        dataHandler.createNewCard(
+            'new card',
+            `${boardId.slice(6)}`,
+            '0',
+            function (response) {
+                console.log(response);
+            })
     },
     showCards: function (cards) {
         // shows the cards of a board
