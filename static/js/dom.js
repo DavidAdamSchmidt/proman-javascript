@@ -145,14 +145,13 @@ export let dom = {
         }
 
         const removeIcons = document.querySelectorAll('.card-remove:first-child i');
+        const cardsContainers = document.querySelectorAll('.card');
 
         for (let icon of removeIcons) {
             icon.addEventListener('click', e => dom.removeCard(e), )
         }
 
-        const cards_ = document.querySelectorAll('.card');
-
-        dom.addDragAndDrop(cards_);
+        dom.addDragAndDrop(cardsContainers);
     },
     removeCard: function (e) {
         e.stopImmediatePropagation();
@@ -231,6 +230,6 @@ export let dom = {
                 console.log(response)
             })
         });
-    }
+    },
     // here comes more features
 };
