@@ -40,3 +40,7 @@ def remove_card(card_id):
 
 def add_board(board_data):
     return persistence.add_board(board_data)
+
+
+def rename_board(board_data):
+    return persistence.rename_board(board_data)

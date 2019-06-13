@@ -55,10 +55,16 @@ export let dom = {
         }
 
         const buttons = document.querySelectorAll('.board-add');
+        const boardTitles = document.querySelectorAll('.board-title');
 
         for (let button of buttons) {
             button.addEventListener('click', (e) => dom.addCard(e));
         }
+
+        for (let title of boardTitles) {
+            title.addEventListener('click', (e) => dom.renamePublicBoard(e));
+        }
+
     },
     addDragAndDrop: function () {
         const cards = document.querySelectorAll('.card');
@@ -205,6 +211,11 @@ export let dom = {
             `;
 
         boardContainer.insertAdjacentHTML("beforeend", outerHTML);
+        const BoardName = document.querySelector(`#board-${newBoardId} .board-title`);
+        const BoardButton = document.querySelector(`#board-${newBoardId} .board-add`);
+        console.log(BoardButton);
+        BoardName.addEventListener('click', (e) => dom.renamePublicBoard(e));
+        BoardButton.addEventListener('click', (e) => dom.addCard(e));
 
         dataHandler.createNewBoard(
             `${newBoardId}`,
@@ -212,6 +223,16 @@ export let dom = {
             function (response) {
                 console.log(response);
             })
+    },
+
+    renamePublicBoard: function (e) {
+        const oldTitle = e.target.innerHTML;
+        let renamedBoardId = e.target.parentElement.parentElement.id.slice(6);
+        e.target.innerHTML = `<form class="board-submit"><input class="board-rename" type="text" style="width: 100px"></form>`;
+        let renameField = document.querySelector(".board-rename");
+        renameField.focus();
+        renameField.parentElement.addEventListener("focusout",function () {e.target.innerHTML = oldTitle});
+        renameField.parentElement.addEventListener('submit', function () {dataHandler.renameBoard(renameField.value, renamedBoardId, function (response) {console.log(response)})});
     }
     // here comes more features
 };
