@@ -84,6 +84,14 @@ export let dataHandler = {
         });
 
         this._api_post('/create-card', data, callback);
+    },
+    renameBoard: function (newName, boardId, callback) {
+        let data = JSON.stringify({
+            title: newName,
+            board_id: boardId,
+        });
+
+        this._api_post('/rename-board', data, callback);
     }
     // here comes more features
 };

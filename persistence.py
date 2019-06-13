@@ -75,3 +75,7 @@ def add_board(board_data):
     new_data['title'] = f'"{board_data["title"]}"'
 
     _append_csv(BOARDS_FILE, new_data)
+
+
+def rename_board(board_data):
+    print(board_data)

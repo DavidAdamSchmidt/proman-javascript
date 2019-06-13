@@ -49,6 +49,14 @@ def create_board():
     return 'todo', 200
 
 
+@app.route("/rename-board", methods=["POST"])
+@json_response
+def rename_board():
+    data = request.get_json()
+    data_handler.rename_board(data)
+    return 'todo', 200
+
+
 def main():
     app.run(
         host='0.0.0.0',
