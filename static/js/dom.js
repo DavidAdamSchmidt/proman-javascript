@@ -50,7 +50,6 @@ export let dom = {
                 </div>
             </section>`;
             boardContainer.insertAdjacentHTML('beforeend', outerHtml);
-
         }
 
         const buttons = document.querySelectorAll('.board-add');
@@ -72,34 +71,57 @@ export let dom = {
 
         const outerHTML = `
         <div class="card">
-            <div class="card-remove" id="card-${newId}"><i class="fas fa-trash-alt"></i></div>
+            <div class="card-remove"><i id="card-${newId}" class="fas fa-trash-alt"></i></div>
             <div class="card-title">new card ${newId}</div>
         </div>`;
 
         cardContainer.insertAdjacentHTML('beforeend', outerHTML);
 
+        const removeButton = document.querySelector(`#card-${newId}`);
+
+        removeButton.addEventListener('click', e => dom.removeCard(e));
+
         dataHandler.createNewCard(
             `${newId}`,
             `${boardId.slice(6)}`,
             function (response) {
-                console.log(response);
+                if (response.status !== 200) {
+                    console.log('There was an error while connecting to the "database"')
+                }
             })
     },
     showCards: function (cards) {
         // shows the cards of a board
         // it adds necessary event listeners also
         for (let card of cards) {
-
-
             const cardContainer = document.querySelector(`#board-${card.board_id} #column-${card.status_id}`);
             let outerHTML = `
             <div class="card">
-                <div class="card-remove" id="card-${card.id}"><i class="fas fa-trash-alt"></i></div>
+                <div class="card-remove"><i id="card-${card.id}" class="fas fa-trash-alt"></i></div>
                 <div class="card-title">${card.title}</div>
             </div>`;
 
             cardContainer.insertAdjacentHTML('beforeend', outerHTML)
         }
+
+        const removeIcons = document.querySelectorAll('.card-remove:first-child i');
+
+        for (let icon of removeIcons) {
+            icon.addEventListener('click', e => dom.removeCard(e), )
+        }
+    },
+    removeCard: function (e) {
+        e.stopImmediatePropagation();
+
+        const cardId = e.target.id.slice(5);
+
+        dataHandler.removeCard(cardId, function (cardId, response) {
+            if (response.status === 200) {
+                document.querySelector(`#card-${cardId}`).parentElement.parentElement.remove()
+            } else {
+                console.log('There was an error during the operation')
+            }
+        })
     }
     // here comes more features
 };

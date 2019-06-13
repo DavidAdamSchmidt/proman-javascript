@@ -32,3 +32,7 @@ def get_cards_for_board(board_id):
 
 def add_card(card_data):
     return persistence.add_card(card_data)
+
+
+def remove_card(card_id):
+    return persistence.remove_card(card_id)

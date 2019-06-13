@@ -28,14 +28,7 @@ export let dataHandler = {
             },
             body: data
         })
-        .then(response => {
-            if (response.status === 200) {
-                callback(response)
-            } else {
-                callback(response);
-                console.log('there was an error while connecting to the "database"')
-            }
-        })
+        .then(response => callback(response))
     },
     init: function () {
     },
@@ -78,6 +71,16 @@ export let dataHandler = {
         });
 
         this._api_post('/create-card', data, callback);
+    },
+    removeCard: function (cardId, callback) {
+        let data = JSON.stringify({
+            id: cardId,
+        });
+
+        this._api_post('/remove-card', data, (response) => {
+            const dataObject = JSON.parse(data);
+
+            callback(dataObject.id, response)
+        });
     }
-    // here comes more features
 };

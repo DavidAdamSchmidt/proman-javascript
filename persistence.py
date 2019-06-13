@@ -7,6 +7,18 @@ CARDS_FILE = './data/cards.csv'
 _cache = {}  # We store cached data in this dict to avoid multiple file readings
 
 
+def _remove_row_from_csv(file_name, row_id, header):
+    data = _read_csv(file_name)
+
+    i = 0
+    while i < len(data) and data[i]['id'] != row_id:
+        i += 1
+    if i < len(data):
+        del data[i]
+
+    _write_csv(file_name, data, header)
+
+
 def _append_csv(file_name, data):
     with open(file_name, 'a') as csvfile:
 
@@ -32,6 +44,15 @@ def _read_csv(file_name):
         for row in rows:
             formatted_data.append(dict(row))
         return formatted_data
+
+
+def _write_csv(file_name, data, header):
+    with open(file_name, 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=header)
+        writer.writeheader()
+
+        for row in data:
+            writer.writerow(row)
 
 
 def _get_data(data_type, file, force):
@@ -66,3 +87,9 @@ def get_cards(force=False):
 
 def add_card(card_data):
     _append_csv(CARDS_FILE, card_data)
+
+
+def remove_card(card_id):
+    header = ['id', 'board_id', 'title', 'status_id', 'order']
+
+    _remove_row_from_csv(CARDS_FILE, card_id, header)
