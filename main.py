@@ -41,6 +41,14 @@ def create_card():
     return 'todo', 200
 
 
+@app.route("/create-board", methods=["POST"])
+@json_response
+def create_board():
+    data = request.get_json()
+    data_handler.add_board(data)
+    return 'todo', 200
+
+
 def main():
     app.run(
         host='0.0.0.0',

@@ -3,7 +3,8 @@ import {dataHandler} from "./data_handler.js";
 
 export let dom = {
     init: function () {
-        // This function should run once, when the page is loaded.
+        const addBoardButton = document.querySelector(".board-add");
+        addBoardButton.addEventListener("click", (e) => dom.addPublicBoard(e));
     },
     clearBoardContainer: function () {
         const boardContainer = document.querySelector('.board-container');
@@ -100,6 +101,50 @@ export let dom = {
 
             cardContainer.insertAdjacentHTML('beforeend', outerHTML)
         }
+    },
+
+    addPublicBoard: function (e) {
+
+        const boardContainer = document.querySelector(".board-container");
+        const newBoardId = document.querySelectorAll(".board").length+1;
+        const newBoardTitle = `Board ${newBoardId}`;
+
+        const outerHTML = `
+        <section class="board" id="board-${newBoardId}">
+                <div class="board-header"><span class="board-title">${newBoardTitle}</span>
+                    <button class="board-add">Add Card</button>
+                    <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
+                </div>
+                <div class="board-columns">
+                    <div class="board-column">
+                        <div class="board-column-title">New</div>
+                        <div class="board-column-content" id="column-new"></div>
+                    </div>
+                    <div class="board-column">
+                        <div class="board-column-title">In progress</div>
+                        <div class="board-column-content" id="column-in-progress"></div>
+                    </div>
+                    <div class="board-column">
+                        <div class="board-column-title">Testing</div>
+                        <div class="board-column-content" id="column-testing"></div>
+                    </div>
+                    <div class="board-column">
+                        <div class="board-column-title">Done</div>
+                        <div class="board-column-content" id="column-done"></div>
+                    </div>
+                </div>
+            </section>\
+            `;
+
+        boardContainer.insertAdjacentHTML("beforeend", outerHTML);
+
+        dataHandler.createNewBoard(
+            `${newBoardId}`,
+            `${newBoardTitle}`,
+            function (response) {
+                console.log(response);
+            })
     }
+
     // here comes more features
 };
