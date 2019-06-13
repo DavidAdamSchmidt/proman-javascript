@@ -19,6 +19,18 @@ def _remove_row_from_csv(file_name, row_id, header):
     _write_csv(file_name, data, header)
 
 
+def _change_row_from_csv(file_name, row_id, header, new_data):
+    data = _read_csv(file_name)
+
+    i = 0
+    while i < len(data) and data[i]['id'] != row_id:
+        i += 1
+    if i < len(data):
+        data[i]['title'] = new_data['title']
+
+    _write_csv(file_name, data, header)
+
+
 def _append_csv(file_name, data):
     with open(file_name, 'a') as csvfile:
 
@@ -105,4 +117,4 @@ def remove_card(card_id):
 
 
 def rename_board(board_data):
-    print(board_data)
+    _change_row_from_csv(BOARDS_FILE, board_data['board_id'], ["id", "title"], board_data)
