@@ -22,14 +22,7 @@ def _remove_row_from_csv(file_name, row_id, header):
 def _append_csv(file_name, data):
     with open(file_name, 'a') as csvfile:
 
-        new_data = collections.OrderedDict()
-        new_data['id'] = data['id']
-        new_data['board_id'] = data['board_id']
-        new_data['title'] = '"new card"'
-        new_data['status_id'] = '0'
-        new_data['order'] = '0'
-
-        csvfile.write((",".join([v for v in new_data.values()]))+"\n")
+        csvfile.write((",".join([v for v in data.values()]))+"\n")
 
 
 def _read_csv(file_name):
@@ -86,7 +79,23 @@ def get_cards(force=False):
 
 
 def add_card(card_data):
-    _append_csv(CARDS_FILE, card_data)
+
+    new_data = collections.OrderedDict()
+    new_data['id'] = card_data['id']
+    new_data['board_id'] = card_data['board_id']
+    new_data['title'] = '"new card"'
+    new_data['status_id'] = '0'
+    new_data['order'] = '0'
+
+    _append_csv(CARDS_FILE, new_data)
+
+
+def add_board(board_data):
+    new_data = collections.OrderedDict()
+    new_data['id'] = board_data['id']
+    new_data['title'] = f'"{board_data["title"]}"'
+
+    _append_csv(BOARDS_FILE, new_data)
 
 
 def remove_card(card_id):
