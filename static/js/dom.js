@@ -5,7 +5,7 @@ export let dom = {
     init: function () {
         // This function should run once, when the page is loaded.
         const addBoardButton = document.querySelector(".board-add");
-        addBoardButton.addEventListener("click", (e) => dom.addPublicBoard(e));
+        addBoardButton.addEventListener("click", () => dom.addPublicBoard());
     },
     clearBoardContainer: function () {
         const boardContainer = document.querySelector('.board-container');
@@ -60,6 +60,48 @@ export let dom = {
             button.addEventListener('click', (e) => dom.addCard(e));
         }
     },
+    addDragAndDrop: function () {
+        const cards = document.querySelectorAll('.card');
+
+        for (let card of cards) {
+            card.draggable = true;
+            card.addEventListener('dragstart', e => dom.drag(e))
+        }
+
+        const containers = document.querySelectorAll('.board-column');
+
+        for (let container of containers) {
+            container.addEventListener('dragover', e => dom.allowDrop(e));
+            container.addEventListener('drop', e => dom.drop(e));
+        }
+    },
+    drag: function (e) {
+        e.stopImmediatePropagation();
+        e.dataTransfer.setData('text', e.target.firstElementChild.firstElementChild.id);
+    },
+    allowDrop: function (e) {
+        e.preventDefault();
+    },
+    drop: function (e) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+
+        const cardId = e.dataTransfer.getData('text');
+        const cardContainer = document.querySelector(`#${cardId}`).parentElement.parentElement;
+
+        if (e.target.className === 'board-column') {
+            e.target.lastElementChild.appendChild(cardContainer);
+        } else if (e.target.className === 'board-column-title') {
+            e.target.nextElementSibling.appendChild(cardContainer)
+        } else {
+            let element = e.target;
+
+            while (element.className !== 'board-column-content') {
+                element = element.parentElement;
+            }
+            element.appendChild(cardContainer)
+        }
+    },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
         dataHandler.getCardsByBoardId(boardId, function (cards) {
@@ -68,6 +110,7 @@ export let dom = {
     },
     addCard: function (e) {
         const cardContainer = e.target.parentElement.nextElementSibling.firstElementChild;
+        console.log(cardContainer);
         const boardId = e.target.parentElement.parentElement.id;
         const newId = document.querySelectorAll('.card').length + 1;
 
@@ -111,6 +154,8 @@ export let dom = {
         for (let icon of removeIcons) {
             icon.addEventListener('click', e => dom.removeCard(e), )
         }
+
+        dom.addDragAndDrop();
     },
     removeCard: function (e) {
         e.stopImmediatePropagation();
@@ -126,7 +171,7 @@ export let dom = {
         })
     },
 
-    addPublicBoard: function (e) {
+    addPublicBoard: function () {
 
         const boardContainer = document.querySelector(".board-container");
         const newBoardId = document.querySelectorAll(".board").length+1;
