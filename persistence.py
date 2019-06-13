@@ -95,7 +95,7 @@ def add_card(card_data):
     new_data = collections.OrderedDict()
     new_data['id'] = card_data['id']
     new_data['board_id'] = card_data['board_id']
-    new_data['title'] = '"new card"'
+    new_data['title'] = f'"new card {card_data["id"]}"'
     new_data['status_id'] = '0'
     new_data['order'] = '0'
 

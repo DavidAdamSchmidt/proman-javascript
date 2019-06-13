@@ -7,9 +7,13 @@ function init() {
     // loads the boards to the screen
     dom.loadBoards();
     // loads the cards inside a given board
-    dom.loadCards(1);
-    dom.loadCards(2)
+    setTimeout(function () {
+        const boards = document.querySelectorAll('section');
 
+        for (let i = 1; i <= boards.length; i++) {
+            dom.loadCards(i);
+        }
+    }, 100);
 }
 
 init();

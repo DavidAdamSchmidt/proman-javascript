@@ -22,7 +22,6 @@ export let dom = {
     showBoards: function (boards) {
         // shows boards appending them to .board-container div
         // it adds necessary event listeners also
-
         const boardContainer = document.querySelector('.board-container');
 
         for (let board of boards) {
@@ -66,9 +65,7 @@ export let dom = {
         }
 
     },
-    addDragAndDrop: function () {
-        const cards = document.querySelectorAll('.card');
-
+    addDragAndDrop: function (cards) {
         for (let card of cards) {
             card.draggable = true;
             card.addEventListener('dragstart', e => dom.drag(e))
@@ -115,22 +112,18 @@ export let dom = {
         });
     },
     addCard: function (e) {
-        const cardContainer = e.target.parentElement.nextElementSibling.firstElementChild;
-        console.log(cardContainer);
+        const cardContainer = e.target.parentElement.nextElementSibling.firstElementChild.lastElementChild;
         const boardId = e.target.parentElement.parentElement.id;
         const newId = document.querySelectorAll('.card').length + 1;
 
-        const outerHTML = `
-        <div class="card">
-            <div class="card-remove"><i id="card-${newId}" class="fas fa-trash-alt"></i></div>
-            <div class="card-title">new card ${newId}</div>
-        </div>`;
+        const outerHTML = `<div class="card"><div class="card-remove"><i id="card-${newId}" class="fas fa-trash-alt"></i></div><div class="card-title">new card ${newId}</div></div>`;
 
         cardContainer.insertAdjacentHTML('beforeend', outerHTML);
 
         const removeButton = document.querySelector(`#card-${newId}`);
 
         removeButton.addEventListener('click', e => dom.removeCard(e));
+        dom.addDragAndDrop([cardContainer.lastElementChild]);
 
         dataHandler.createNewCard(
             `${newId}`,
@@ -146,11 +139,7 @@ export let dom = {
         // it adds necessary event listeners also
         for (let card of cards) {
             const cardContainer = document.querySelector(`#board-${card.board_id} #column-${card.status_id}`);
-            let outerHTML = `
-            <div class="card">
-                <div class="card-remove"><i id="card-${card.id}" class="fas fa-trash-alt"></i></div>
-                <div class="card-title">${card.title}</div>
-            </div>`;
+            let outerHTML = `<div class="card"><div class="card-remove"><i id="card-${card.id}" class="fas fa-trash-alt"></i></div><div class="card-title">${card.title}</div></div>`;
 
             cardContainer.insertAdjacentHTML('beforeend', outerHTML)
         }
@@ -161,7 +150,9 @@ export let dom = {
             icon.addEventListener('click', e => dom.removeCard(e), )
         }
 
-        dom.addDragAndDrop();
+        const cards_ = document.querySelectorAll('.card');
+
+        dom.addDragAndDrop(cards_);
     },
     removeCard: function (e) {
         e.stopImmediatePropagation();
@@ -176,7 +167,6 @@ export let dom = {
             }
         })
     },
-
     addPublicBoard: function () {
 
         const boardContainer = document.querySelector(".board-container");
@@ -224,15 +214,23 @@ export let dom = {
                 console.log(response);
             })
     },
-
     renamePublicBoard: function (e) {
         const oldTitle = e.target.innerHTML;
         let renamedBoardId = e.target.parentElement.parentElement.id.slice(6);
-        e.target.innerHTML = `<form class="board-submit"><input class="board-rename" type="text" style="width: 100px"></form>`;
+        e.target.innerHTML = `
+        <form class="board-submit">
+            <input class="board-rename" type="text" placeholder="Press Enter to save your title!" required>
+        </form>`;
         let renameField = document.querySelector(".board-rename");
         renameField.focus();
-        renameField.parentElement.addEventListener("focusout",function () {e.target.innerHTML = oldTitle});
-        renameField.parentElement.addEventListener('submit', function () {dataHandler.renameBoard(renameField.value, renamedBoardId, function (response) {console.log(response)})});
+        renameField.parentElement.addEventListener("focusout",function () {
+            e.target.innerHTML = oldTitle
+        });
+        renameField.parentElement.addEventListener('submit', function () {
+            dataHandler.renameBoard(renameField.value, renamedBoardId, function (response) {
+                console.log(response)
+            })
+        });
     }
     // here comes more features
 };
