@@ -73,7 +73,7 @@ export let dom = {
         const outerHTML = `
         <div class="card">
             <div class="card-remove" id="card-${newId}"><i class="fas fa-trash-alt"></i></div>
-            <div class="card-title">new card</div>
+            <div class="card-title">new card ${newId}</div>
         </div>`;
 
         cardContainer.insertAdjacentHTML('beforeend', outerHTML);
@@ -81,8 +81,6 @@ export let dom = {
         dataHandler.createNewCard(
             `${newId}`,
             `${boardId.slice(6)}`,
-            '"new card"',
-            '0',
             function (response) {
                 console.log(response);
             })

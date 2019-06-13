@@ -70,14 +70,11 @@ export let dataHandler = {
     createNewBoard: function (boardTitle, callback) {
         // creates new board, saves it and calls the callback function with its data
     },
-    createNewCard: function (cardId, boardId, cardTitle, statusId, callback) {
+    createNewCard: function (cardId, boardId, callback) {
         // creates new card, saves it and calls the callback function with its data
         let data = JSON.stringify({
             id: cardId,
             board_id: boardId,
-            title: cardTitle,
-            status_id: statusId,
-            order: "0"
         });
 
         this._api_post('/create-card', data, callback);

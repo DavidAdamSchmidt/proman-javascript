@@ -42,7 +42,11 @@ def create_card():
 
 
 def main():
-    app.run(debug=True)
+    app.run(
+        host='0.0.0.0',
+        port=5000,
+        debug=True,
+    )
 
     # Serving the favicon
     with app.app_context():
@@ -52,16 +56,3 @@ def main():
 if __name__ == '__main__':
     main()
 
-# id,board_id,title,status_id,order
-# 1,1,new card 1,0,0
-# 2,1,new card 2,0,1
-# 3,1,in progress card,1,0
-# 4,1,planning,2,0
-# 5,1,done card 1,3,0
-# 6,1,done card 1,3,1
-# 7,2,new card 1,0,0
-# 8,2,new card 2,0,1
-# 9,2,in progress card,1,0
-# 10,2,planning,2,0
-# 11,2,done card 1,3,0
-# 12,2,done card 1,3,1
