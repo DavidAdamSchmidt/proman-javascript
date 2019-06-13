@@ -79,8 +79,9 @@ export let dom = {
         cardContainer.insertAdjacentHTML('beforeend', outerHTML);
 
         dataHandler.createNewCard(
-            'new card',
+            `${newId}`,
             `${boardId.slice(6)}`,
+            '"new card"',
             '0',
             function (response) {
                 console.log(response);

@@ -1,10 +1,42 @@
-import csv
+import csv, collections
 
 STATUSES_FILE = './data/statuses.csv'
 BOARDS_FILE = './data/boards.csv'
 CARDS_FILE = './data/cards.csv'
 
+CARDS_HEADER = ["id", "board_id", "title", "status_id", "order"]
+
 _cache = {}  # We store cached data in this dict to avoid multiple file readings
+
+
+def _write_csv(file_name, header, data, append=True):
+    with open(file_name, 'a') as csvfile:
+
+        new_data = collections.OrderedDict()
+        new_data['id'] = data['id']
+        new_data['board_id'] = data['board_id']
+        new_data['title'] = data['title']
+        new_data['status_id'] = data['status_id']
+        new_data['order'] = data['order']
+
+        csvfile.write((",".join([v for v in new_data.values()]))+"\n")
+
+        # writer = csv.DictWriter(csvfile)
+        # writer.writeheader()
+
+        # existing_data = _get_data('cards', CARDS_FILE, False)
+        # print(existing_data)
+
+        # for row in existing_data:
+        #     # On updating an existing User Story, just overwrite the current line with the received data
+        #     # if not append:
+        #     #     if row['id'] == data['id']:
+        #     #         row = data
+        #
+        #     writer.writerow(row)
+
+        # if append:
+        # writer.writerow(data)
 
 
 def _read_csv(file_name):
@@ -49,3 +81,7 @@ def get_boards(force=False):
 
 def get_cards(force=False):
     return _get_data('cards', CARDS_FILE, force)
+
+
+def add_card(card_data):
+    _write_csv(CARDS_FILE, CARDS_HEADER, card_data)
