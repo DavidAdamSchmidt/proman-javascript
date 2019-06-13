@@ -230,6 +230,6 @@ export let dom = {
                 console.log(response)
             })
         });
-    },
+    }
     // here comes more features
 };
