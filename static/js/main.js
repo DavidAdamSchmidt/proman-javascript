@@ -5,15 +5,13 @@ function init() {
     // init data
     dom.init();
     // loads the boards to the screen
-    dom.loadBoards();
-    // loads the cards inside a given board
-    setTimeout(function () {
+    dom.loadBoards(function () {
         const boards = document.querySelectorAll('section');
 
-        for (let i = 1; i <= boards.length; i++) {
-            dom.loadCards(i);
+        for (let board of boards) {
+            dom.loadCards(board.id.slice(6))
         }
-    }, 100);
+    });
 }
 
 init();

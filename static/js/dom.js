@@ -16,11 +16,12 @@ export let dom = {
     renderBoard: function (id, title) {
         return renderElement(id, title, 'board');
     },
-    loadBoards: function () {
+    loadBoards: function (callback) {
         // retrieves boards and makes showBoards called
         dataHandler.getBoards(function (boards) {
             dom.clearBoardContainer();
             dom.showBoards(boards);
+            callback();
         });
     },
     showBoards: function (boards) {
