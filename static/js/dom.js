@@ -6,7 +6,7 @@ export let dom = {
         // This function should run once, when the page is loaded.
         const addBoardButton = document.querySelector('.board-add');
 
-        addBoardButton.addEventListener('click', () => dom.addPublicBoard());
+        addBoardButton.addEventListener('click', e => dom.addBoard(e));
     },
     clearBoardContainer: function () {
         const boardContainer = document.querySelector('.board-container');
@@ -43,8 +43,60 @@ export let dom = {
         const boardTitles = document.querySelectorAll('.board-title');
 
         for (let title of boardTitles) {
-            title.addEventListener('click', e => dom.renamePublicBoard(e));
+            title.addEventListener('click', e => dom.renameBoard(e));
         }
+    },
+    addBoard: function (e) {
+        e.stopImmediatePropagation();
+
+        const boardContainer = document.querySelector('.board-container');
+
+        const boardId = document.querySelectorAll('.board').length + 1;
+        const boardTitle = `Board ${boardId}`;
+        const newBoard = dom.renderBoard(boardId, boardTitle);
+
+        boardContainer.insertAdjacentHTML('beforeend', newBoard);
+
+        const titleContainer = document.querySelector(`#board-${boardId} .board-title`);
+        const addCardButton = document.querySelector(`#board-${boardId} .board-add`);
+
+        titleContainer.addEventListener('click', e => dom.renameBoard(e));
+        addCardButton.addEventListener('click', e => dom.addCard(e));
+
+        dataHandler.createNewBoard(
+            `${boardId}`,
+            `${boardTitle}`,
+            response => console.log(response)
+        );
+    },
+    renameBoard: function (e) {
+        const oldTitle = e.target.innerHTML;
+        e.target.innerHTML = '';
+
+        const board = e.target.closest('.board');
+        const boardId = board.id.slice(6);
+
+        const formTemplate = document.querySelector('#board-rename-template');
+        const formTemplateClone = document.importNode(formTemplate.content, true);
+
+        e.target.appendChild(formTemplateClone);
+
+        const renameField = document.querySelector('.board-rename');
+        const form = renameField.parentElement;
+
+        renameField.focus();
+
+        form.addEventListener('focusout',function () {
+            e.target.innerHTML = oldTitle;
+        });
+
+        form.addEventListener('submit', function () {
+            dataHandler.renameBoard(
+                renameField.value,
+                boardId,
+                response => console.log(response)
+            );
+        });
     },
     renderCard: function (id, title) {
         return renderElement(id, title, 'card');
@@ -153,46 +205,6 @@ export let dom = {
                 console.log('There was an error during the operation')
             }
         })
-    },
-    addPublicBoard: function () {
-
-        const boardContainer = document.querySelector(".board-container");
-        const newBoardId = document.querySelectorAll(".board").length+1;
-        const newBoardTitle = `Board ${newBoardId}`;
-
-        const newBoard = dom.renderBoard(newBoardId, newBoardTitle);
-
-        boardContainer.insertAdjacentHTML("beforeend", newBoard);
-        const BoardName = document.querySelector(`#board-${newBoardId} .board-title`);
-        const BoardButton = document.querySelector(`#board-${newBoardId} .board-add`);
-        console.log(BoardButton);
-        BoardName.addEventListener('click', (e) => dom.renamePublicBoard(e));
-        BoardButton.addEventListener('click', (e) => dom.addCard(e));
-
-        dataHandler.createNewBoard(
-            `${newBoardId}`,
-            `${newBoardTitle}`,
-            function (response) {
-                console.log(response);
-            })
-    },
-    renamePublicBoard: function (e) {
-        const oldTitle = e.target.innerHTML;
-        let renamedBoardId = e.target.parentElement.parentElement.id.slice(6);
-        e.target.innerHTML = `
-        <form class="board-submit">
-            <input class="board-rename" type="text" placeholder="Press Enter to save your title!" required>
-        </form>`;
-        let renameField = document.querySelector(".board-rename");
-        renameField.focus();
-        renameField.parentElement.addEventListener("focusout",function () {
-            e.target.innerHTML = oldTitle
-        });
-        renameField.parentElement.addEventListener('submit', function () {
-            dataHandler.renameBoard(renameField.value, renamedBoardId, function (response) {
-                console.log(response)
-            })
-        });
     }
     // here comes more features
 };
