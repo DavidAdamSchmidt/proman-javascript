@@ -209,5 +209,5 @@ function renderElement(id, title, type) {
     return templateRenderer({
         id: id,
         title: title
-    })
+    }).trim();
 }
