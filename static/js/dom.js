@@ -145,7 +145,7 @@ export let dom = {
 
         dataHandler.createNewCard(
             `${cardId}`,
-            `${board.id.slice(6)}`,
+            `${board.dataset.boardId}`,
             function (response) {
                 if (response.status !== 200) {
                     console.log('There was an error while connecting to the "database"')
