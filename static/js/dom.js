@@ -82,7 +82,7 @@ export let dom = {
         e.target.appendChild(formTemplateClone);
 
         const renameField = document.querySelector('.board-rename');
-        const form = renameField.parentElement;
+        const form = renameField.closest('form');
 
         renameField.focus();
 
@@ -93,7 +93,7 @@ export let dom = {
         form.addEventListener('submit', function () {
             dataHandler.renameBoard(
                 renameField.value,
-                board.dataset.Id,
+                board.dataset.boardId,
                 response => console.log(response)
             );
         });
