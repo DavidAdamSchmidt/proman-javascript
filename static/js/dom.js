@@ -138,9 +138,9 @@ export let dom = {
 
         cardContainer.insertAdjacentHTML('beforeend', newCard);
 
-        const removeButton = document.querySelector(`#card-${cardId}`);
+        const removeIcon = document.querySelector(`[data-card-id="${cardId}"] div i`);
 
-        removeButton.addEventListener('click', e => dom.removeCard(e));
+        removeIcon.addEventListener('click', e => dom.removeCard(e));
         addDragAndDrop([cardContainer.lastElementChild]);
 
         dataHandler.createNewCard(
@@ -156,13 +156,11 @@ export let dom = {
     removeCard: function (e) {
         e.stopImmediatePropagation();
 
-        const cardId = e.target.id.slice(5);
+        const card = e.target.closest('.card');
+        const cardId = card.dataset.cardId;
 
         dataHandler.removeCard(cardId, function (cardId, response) {
             if (response.status === 200) {
-                const cardIcon = document.querySelector(`#card-${cardId}`);
-                const card = cardIcon.closest('.card');
-
                 card.remove();
             } else {
                 console.log('There was an error during the operation');
@@ -204,7 +202,7 @@ function addDragAndDrop(cards) {
 function onDrag(e) {
     e.stopImmediatePropagation();
 
-    e.dataTransfer.setData('text', e.target.querySelector('i').id);
+    e.dataTransfer.setData('text', e.target.closest('.card').dataset.cardId);
 }
 
 function allowDrop(e) {
@@ -216,8 +214,7 @@ function onDrop(e) {
     e.preventDefault();
 
     const cardId = e.dataTransfer.getData('text');
-    const cardIcon = document.querySelector(`#${cardId}`);
-    const card = cardIcon.closest('.card');
+    const card = document.querySelector(`[data-card-id="${cardId}"]`);
     const targetColumn = e.target.closest('.board-column');
     const cardContainer = targetColumn.querySelector('.board-column-content');
 
