@@ -18,11 +18,15 @@
         <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js' defer ></script>
 
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js"></script>
         <script type="module" src="{{ url_for('static', filename='js/main.js') }}" defer></script>
     </head>
     <body>
         <h1>ProMan</h1>
         <button class="board-add">Add new board</button>
         <div class="board-container">Boards are loading...</div>
+
+        {% include 'templates.html' %}
     </body>
 </html>

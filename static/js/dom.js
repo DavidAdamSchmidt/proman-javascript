@@ -12,6 +12,15 @@ export let dom = {
 
         boardContainer.innerHTML = '';
     },
+    renderBoard: function (id, title) {
+        const source = document.querySelector('#board-template').innerHTML;
+        const templateRenderer = Handlebars.compile(source);
+
+        return templateRenderer({
+            id: id,
+            title: title
+        })
+    },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
         dataHandler.getBoards(function (boards) {
@@ -25,32 +34,9 @@ export let dom = {
         const boardContainer = document.querySelector('.board-container');
 
         for (let board of boards) {
-            let outerHtml = `
-            <section class="board" id="board-${board.id}">
-                <div class="board-header"><span class="board-title">${board.title}</span>
-                    <button class="board-add">Add Card</button>
-                    <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
-                </div>
-                <div class="board-columns">
-                    <div class="board-column">
-                        <div class="board-column-title">New</div>
-                        <div class="board-column-content" id="column-new"></div>
-                    </div>
-                    <div class="board-column">
-                        <div class="board-column-title">In progress</div>
-                        <div class="board-column-content" id="column-in-progress"></div>
-                    </div>
-                    <div class="board-column">
-                        <div class="board-column-title">Testing</div>
-                        <div class="board-column-content" id="column-testing"></div>
-                    </div>
-                    <div class="board-column">
-                        <div class="board-column-title">Done</div>
-                        <div class="board-column-content" id="column-done"></div>
-                    </div>
-                </div>
-            </section>`;
-            boardContainer.insertAdjacentHTML('beforeend', outerHtml);
+            let newBoard = dom.renderBoard(board.id, board.title);
+
+            boardContainer.insertAdjacentHTML('beforeend', newBoard);
         }
 
         const buttons = document.querySelectorAll('.board-add');
@@ -173,34 +159,9 @@ export let dom = {
         const newBoardId = document.querySelectorAll(".board").length+1;
         const newBoardTitle = `Board ${newBoardId}`;
 
-        const outerHTML = `
-        <section class="board" id="board-${newBoardId}">
-                <div class="board-header"><span class="board-title">${newBoardTitle}</span>
-                    <button class="board-add">Add Card</button>
-                    <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
-                </div>
-                <div class="board-columns">
-                    <div class="board-column">
-                        <div class="board-column-title">New</div>
-                        <div class="board-column-content" id="column-new"></div>
-                    </div>
-                    <div class="board-column">
-                        <div class="board-column-title">In progress</div>
-                        <div class="board-column-content" id="column-in-progress"></div>
-                    </div>
-                    <div class="board-column">
-                        <div class="board-column-title">Testing</div>
-                        <div class="board-column-content" id="column-testing"></div>
-                    </div>
-                    <div class="board-column">
-                        <div class="board-column-title">Done</div>
-                        <div class="board-column-content" id="column-done"></div>
-                    </div>
-                </div>
-            </section>\
-            `;
+        const newBoard = dom.renderBoard(newBoardId, newBoardTitle);
 
-        boardContainer.insertAdjacentHTML("beforeend", outerHTML);
+        boardContainer.insertAdjacentHTML("beforeend", newBoard);
         const BoardName = document.querySelector(`#board-${newBoardId} .board-title`);
         const BoardButton = document.querySelector(`#board-${newBoardId} .board-add`);
         console.log(BoardButton);
