@@ -119,7 +119,7 @@ export let dom = {
             cardContainer.insertAdjacentHTML('beforeend', newCard);
         }
 
-        const removeIcons = document.querySelectorAll('.card-remove:first-child i');
+        const removeIcons = document.querySelectorAll('i');
 
         for (let icon of removeIcons) {
             icon.addEventListener('click', e => dom.removeCard(e), )
@@ -161,9 +161,12 @@ export let dom = {
 
         dataHandler.removeCard(cardId, function (cardId, response) {
             if (response.status === 200) {
-                document.querySelector(`#card-${cardId}`).parentElement.parentElement.remove()
+                const cardIcon = document.querySelector(`#card-${cardId}`);
+                const card = cardIcon.closest('.card');
+
+                card.remove();
             } else {
-                console.log('There was an error during the operation')
+                console.log('There was an error during the operation');
             }
         })
     }
