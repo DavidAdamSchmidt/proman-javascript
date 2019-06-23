@@ -1,11 +1,12 @@
 // It uses data_handler.js to visualize elements
-import {dataHandler} from "./data_handler.js";
+import {dataHandler} from './data_handler.js';
 
 export let dom = {
     init: function () {
         // This function should run once, when the page is loaded.
-        const addBoardButton = document.querySelector(".board-add");
-        addBoardButton.addEventListener("click", () => dom.addPublicBoard());
+        const addBoardButton = document.querySelector('.board-add');
+
+        addBoardButton.addEventListener('click', () => dom.addPublicBoard());
     },
     clearBoardContainer: function () {
         const boardContainer = document.querySelector('.board-container');
@@ -40,16 +41,77 @@ export let dom = {
         }
 
         const buttons = document.querySelectorAll('.board-add');
-        const boardTitles = document.querySelectorAll('.board-title');
 
         for (let button of buttons) {
-            button.addEventListener('click', (e) => dom.addCard(e));
+            button.addEventListener('click', e => dom.addCard(e));
         }
+
+        const boardTitles = document.querySelectorAll('.board-title');
 
         for (let title of boardTitles) {
-            title.addEventListener('click', (e) => dom.renamePublicBoard(e));
+            title.addEventListener('click', e => dom.renamePublicBoard(e));
+        }
+    },
+    renderCard: function (id, title) {
+        const source = document.querySelector('#card-template').innerHTML;
+        const templateRenderer = Handlebars.compile(source);
+
+        return templateRenderer({
+            id: id,
+            title: title
+        }).trim();
+    },
+    loadCards: function (boardId) {
+        // retrieves cards and makes showCards called
+        dataHandler.getCardsByBoardId(boardId, function (cards) {
+            dom.showCards(cards);
+        });
+    },
+    showCards: function (cards) {
+        // shows the cards of a board
+        // it adds necessary event listeners also
+        for (let card of cards) {
+            let cardContainer = document.querySelector(
+                `#board-${card.board_id} #column-${card.status_id}`);
+            let newCard = dom.renderCard(card.id, card.title);
+
+            cardContainer.insertAdjacentHTML('beforeend', newCard);
         }
 
+        const removeIcons = document.querySelectorAll('.card-remove:first-child i');
+
+        for (let icon of removeIcons) {
+            icon.addEventListener('click', e => dom.removeCard(e), )
+        }
+
+        cards = document.querySelectorAll('.card');
+
+        dom.addDragAndDrop(cards);
+    },
+    addCard: function (e) {
+        const board = e.target.closest('.board');
+        const boardColumns = board.querySelector('.board-columns');
+        const cardContainer = boardColumns.querySelector('.board-column-content');
+
+        const cardId = document.querySelectorAll('.card').length + 1;
+        const newCard = dom.renderCard(cardId, `new card ${cardId}`);
+
+        cardContainer.insertAdjacentHTML('beforeend', newCard);
+
+        const removeButton = document.querySelector(`#card-${cardId}`);
+
+        removeButton.addEventListener('click', e => dom.removeCard(e));
+        dom.addDragAndDrop([cardContainer.lastElementChild]);
+
+        dataHandler.createNewCard(
+            `${cardId}`,
+            `${board.id.slice(6)}`,
+            function (response) {
+                if (response.status !== 200) {
+                    console.log('There was an error while connecting to the "database"')
+                }
+            }
+        )
     },
     addDragAndDrop: function (cards) {
         for (let card of cards) {
@@ -90,63 +152,6 @@ export let dom = {
             }
             element.appendChild(cardContainer)
         }
-    },
-    renderCard: function (id, title) {
-        const source = document.querySelector('#card-template').innerHTML;
-        const templateRenderer = Handlebars.compile(source);
-
-        return templateRenderer({
-            id: id,
-            title: title
-        }).trim();
-    },
-    loadCards: function (boardId) {
-        // retrieves cards and makes showCards called
-        dataHandler.getCardsByBoardId(boardId, function (cards) {
-            dom.showCards(cards);
-        });
-    },
-    addCard: function (e) {
-        const cardContainer = e.target.parentElement.nextElementSibling.firstElementChild.lastElementChild;
-        const boardId = e.target.parentElement.parentElement.id;
-        const newId = document.querySelectorAll('.card').length + 1;
-        const newCard = dom.renderCard(newId, `new card ${newId}`);
-
-        cardContainer.insertAdjacentHTML('beforeend', newCard);
-
-        const removeButton = document.querySelector(`#card-${newId}`);
-
-        removeButton.addEventListener('click', e => dom.removeCard(e));
-        dom.addDragAndDrop([cardContainer.lastElementChild]);
-
-        dataHandler.createNewCard(
-            `${newId}`,
-            `${boardId.slice(6)}`,
-            function (response) {
-                if (response.status !== 200) {
-                    console.log('There was an error while connecting to the "database"')
-                }
-            })
-    },
-    showCards: function (cards) {
-        // shows the cards of a board
-        // it adds necessary event listeners also
-        for (let card of cards) {
-            const cardContainer = document.querySelector(`#board-${card.board_id} #column-${card.status_id}`);
-            let newCard = dom.renderCard(card.id, card.title);
-
-            cardContainer.insertAdjacentHTML('beforeend', newCard)
-        }
-
-        const removeIcons = document.querySelectorAll('.card-remove:first-child i');
-
-        for (let icon of removeIcons) {
-            icon.addEventListener('click', e => dom.removeCard(e), )
-        }
-
-        const cards_ = document.querySelectorAll('.card');
-
-        dom.addDragAndDrop(cards_);
     },
     removeCard: function (e) {
         e.stopImmediatePropagation();
