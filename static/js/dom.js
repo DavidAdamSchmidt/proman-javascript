@@ -71,11 +71,10 @@ export let dom = {
         );
     },
     renameBoard: function (e) {
+        const board = e.target.closest('.board');
+
         const oldTitle = e.target.innerHTML;
         e.target.innerHTML = '';
-
-        const board = e.target.closest('.board');
-        const boardId = board.id.slice(6);
 
         const formTemplate = document.querySelector('#board-rename-template');
         const formTemplateClone = document.importNode(formTemplate.content, true);
@@ -94,7 +93,7 @@ export let dom = {
         form.addEventListener('submit', function () {
             dataHandler.renameBoard(
                 renameField.value,
-                boardId,
+                board.dataset.Id,
                 response => console.log(response)
             );
         });
@@ -113,7 +112,7 @@ export let dom = {
         // it adds necessary event listeners also
         for (let card of cards) {
             let cardContainer = document.querySelector(
-                `#board-${card.board_id} #column-${card.status_id}`);
+                `[data-board-id="${card.board_id}"] [data-column-type="${card.status_id}"]`);
             let newCard = dom.renderCard(card.id, card.title);
 
             cardContainer.insertAdjacentHTML('beforeend', newCard);

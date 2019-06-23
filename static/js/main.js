@@ -1,4 +1,4 @@
-import { dom } from "./dom.js";
+import { dom } from './dom.js';
 
 // This function is to initialize the application
 function init() {
@@ -9,7 +9,7 @@ function init() {
         const boards = document.querySelectorAll('section');
 
         for (let board of boards) {
-            dom.loadCards(board.id.slice(6))
+            dom.loadCards(board.dataset.boardId)
         }
     });
 }
