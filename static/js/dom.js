@@ -91,6 +91,15 @@ export let dom = {
             element.appendChild(cardContainer)
         }
     },
+    renderCard: function (id, title) {
+        const source = document.querySelector('#card-template').innerHTML;
+        const templateRenderer = Handlebars.compile(source);
+
+        return templateRenderer({
+            id: id,
+            title: title
+        }).trim();
+    },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
         dataHandler.getCardsByBoardId(boardId, function (cards) {
@@ -101,10 +110,9 @@ export let dom = {
         const cardContainer = e.target.parentElement.nextElementSibling.firstElementChild.lastElementChild;
         const boardId = e.target.parentElement.parentElement.id;
         const newId = document.querySelectorAll('.card').length + 1;
+        const newCard = dom.renderCard(newId, `new card ${newId}`);
 
-        const outerHTML = `<div class="card"><div class="card-remove"><i id="card-${newId}" class="fas fa-trash-alt"></i></div><div class="card-title">new card ${newId}</div></div>`;
-
-        cardContainer.insertAdjacentHTML('beforeend', outerHTML);
+        cardContainer.insertAdjacentHTML('beforeend', newCard);
 
         const removeButton = document.querySelector(`#card-${newId}`);
 
@@ -125,9 +133,9 @@ export let dom = {
         // it adds necessary event listeners also
         for (let card of cards) {
             const cardContainer = document.querySelector(`#board-${card.board_id} #column-${card.status_id}`);
-            let outerHTML = `<div class="card"><div class="card-remove"><i id="card-${card.id}" class="fas fa-trash-alt"></i></div><div class="card-title">${card.title}</div></div>`;
+            let newCard = dom.renderCard(card.id, card.title);
 
-            cardContainer.insertAdjacentHTML('beforeend', outerHTML)
+            cardContainer.insertAdjacentHTML('beforeend', newCard)
         }
 
         const removeIcons = document.querySelectorAll('.card-remove:first-child i');
