@@ -126,7 +126,7 @@ export let dom = {
 
         cards = document.querySelectorAll('.card');
 
-        dom.addDragAndDrop(cards);
+        addDragAndDrop(cards);
     },
     addCard: function (e) {
         const board = e.target.closest('.board');
@@ -141,7 +141,7 @@ export let dom = {
         const removeButton = document.querySelector(`#card-${cardId}`);
 
         removeButton.addEventListener('click', e => dom.removeCard(e));
-        dom.addDragAndDrop([cardContainer.lastElementChild]);
+        addDragAndDrop([cardContainer.lastElementChild]);
 
         dataHandler.createNewCard(
             `${cardId}`,
@@ -152,46 +152,6 @@ export let dom = {
                 }
             }
         )
-    },
-    addDragAndDrop: function (cards) {
-        for (let card of cards) {
-            card.draggable = true;
-            card.addEventListener('dragstart', e => dom.drag(e))
-        }
-
-        const containers = document.querySelectorAll('.board-column');
-
-        for (let container of containers) {
-            container.addEventListener('dragover', e => dom.allowDrop(e));
-            container.addEventListener('drop', e => dom.drop(e));
-        }
-    },
-    drag: function (e) {
-        e.stopImmediatePropagation();
-        e.dataTransfer.setData('text', e.target.firstElementChild.firstElementChild.id);
-    },
-    allowDrop: function (e) {
-        e.preventDefault();
-    },
-    drop: function (e) {
-        e.stopImmediatePropagation();
-        e.preventDefault();
-
-        const cardId = e.dataTransfer.getData('text');
-        const cardContainer = document.querySelector(`#${cardId}`).parentElement.parentElement;
-
-        if (e.target.className === 'board-column') {
-            e.target.lastElementChild.appendChild(cardContainer);
-        } else if (e.target.className === 'board-column-title') {
-            e.target.nextElementSibling.appendChild(cardContainer)
-        } else {
-            let element = e.target;
-
-            while (element.className !== 'board-column-content') {
-                element = element.parentElement;
-            }
-            element.appendChild(cardContainer)
-        }
     },
     removeCard: function (e) {
         e.stopImmediatePropagation();
@@ -222,4 +182,41 @@ function renderElement(id, title, type) {
         id: id,
         title: title
     }).trim();
+}
+
+function addDragAndDrop(cards) {
+    for (let card of cards) {
+        card.draggable = true;
+        card.addEventListener('dragstart', e => onDrag(e))
+    }
+
+    const containers = document.querySelectorAll('.board-column');
+
+    for (let container of containers) {
+        container.addEventListener('dragover', e => allowDrop(e));
+        container.addEventListener('drop', e => onDrop(e));
+    }
+}
+
+function onDrag(e) {
+    e.stopImmediatePropagation();
+
+    e.dataTransfer.setData('text', e.target.querySelector('i').id);
+}
+
+function allowDrop(e) {
+    e.preventDefault();
+}
+
+function onDrop(e) {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+
+    const cardId = e.dataTransfer.getData('text');
+    const cardIcon = document.querySelector(`#${cardId}`);
+    const card = cardIcon.closest('.card');
+    const targetColumn = e.target.closest('.board-column');
+    const cardContainer = targetColumn.querySelector('.board-column-content');
+
+    cardContainer.appendChild(card);
 }
