@@ -14,13 +14,7 @@ export let dom = {
         boardContainer.innerHTML = '';
     },
     renderBoard: function (id, title) {
-        const source = document.querySelector('#board-template').innerHTML;
-        const templateRenderer = Handlebars.compile(source);
-
-        return templateRenderer({
-            id: id,
-            title: title
-        })
+        return renderElement(id, title, 'board');
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
@@ -53,13 +47,7 @@ export let dom = {
         }
     },
     renderCard: function (id, title) {
-        const source = document.querySelector('#card-template').innerHTML;
-        const templateRenderer = Handlebars.compile(source);
-
-        return templateRenderer({
-            id: id,
-            title: title
-        }).trim();
+        return renderElement(id, title, 'card');
     },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
@@ -208,3 +196,18 @@ export let dom = {
     }
     // here comes more features
 };
+
+function renderElement(id, title, type) {
+    // this function can only be called by the renderBoard and renderCard methods of the dom object
+    if (type !== 'board' && type !== 'card') {
+        throw 'Invalid type argument!';
+    }
+
+    const source = document.querySelector(`#${type}-template`).innerHTML;
+    const templateRenderer = Handlebars.compile(source);
+
+    return templateRenderer({
+        id: id,
+        title: title
+    })
+}
