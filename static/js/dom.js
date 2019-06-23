@@ -173,7 +173,7 @@ export let dom = {
 function renderElement(id, title, type) {
     // this function can only be called by the renderBoard and renderCard methods of the dom object
     if (type !== 'board' && type !== 'card') {
-        throw 'Invalid type argument!';
+        throw 'Invalid argument provided for parameter "type"!';
     }
 
     const source = document.querySelector(`#${type}-template`).innerHTML;
