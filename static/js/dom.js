@@ -86,7 +86,7 @@ export let dom = {
 
         renameField.focus();
 
-        form.addEventListener('focusout',function () {
+        form.addEventListener('focusout', function () {
             e.target.innerHTML = oldTitle;
         });
 
@@ -122,7 +122,7 @@ export let dom = {
         const removeIcons = document.querySelectorAll('i');
 
         for (let icon of removeIcons) {
-            icon.addEventListener('click', e => dom.removeCard(e), )
+            icon.addEventListener('click', e => dom.removeCard(e))
         }
 
         const cardElements = document.querySelectorAll('.card');
@@ -132,24 +132,21 @@ export let dom = {
     addCard: function (e) {
         const board = e.target.closest('.board');
 
-        dataHandler.createNewCard(
-            `${board.dataset.boardId}`,
-            function (response) {
-                let cardId = response['card_id'];
+        dataHandler.createNewCard(`${board.dataset.boardId}`, function (response) {
+            const cardId = response['card_id'];
 
-                const boardColumns = board.querySelector('.board-columns');
-                const cardContainer = boardColumns.querySelector('.board-column-content');
+            const boardColumns = board.querySelector('.board-columns');
+            const cardContainer = boardColumns.querySelector('.board-column-content');
 
-                const newCard = dom.renderCard(cardId, `new card ${cardId}`);
+            const newCard = dom.renderCard(cardId, `new card ${cardId}`);
 
-                cardContainer.insertAdjacentHTML('beforeend', newCard);
+            cardContainer.insertAdjacentHTML('beforeend', newCard);
 
-                const removeIcon = document.querySelector(`[data-card-id="${cardId}"] div i`);
+            const removeIcon = document.querySelector(`[data-card-id="${cardId}"] div i`);
 
-                removeIcon.addEventListener('click', e => dom.removeCard(e));
-                addDragAndDrop([cardContainer.lastElementChild]);
-            }
-        )
+            removeIcon.addEventListener('click', e => dom.removeCard(e));
+            addDragAndDrop([cardContainer.lastElementChild]);
+        })
     },
     removeCard: function (e) {
         e.stopImmediatePropagation();
