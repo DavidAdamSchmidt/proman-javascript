@@ -22,7 +22,7 @@ def get_cards_for_board(cursor, board_id):
                c.board_id,
                c.title,
                s.title AS status_id,
-               c.order_by
+               c.position
         FROM card c
             JOIN status s
                 ON c.status_id = s.id
