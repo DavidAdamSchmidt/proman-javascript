@@ -28,6 +28,7 @@ export let dataHandler = {
             },
             body: data
         })
+        .then(response => response.json()) // TODO: check status code here
         .then(response => callback(response))
     },
     init: function () {
@@ -69,10 +70,9 @@ export let dataHandler = {
 
         this._api_post('/create-board', data, callback);
     },
-    createNewCard: function (cardId, boardId, callback) {
+    createNewCard: function (boardId, callback) {
         // creates new card, saves it and calls the callback function with its data
         let data = JSON.stringify({
-            id: cardId,
             board_id: boardId,
         });
 

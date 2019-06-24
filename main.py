@@ -38,8 +38,11 @@ def get_cards_for_board(board_id: int):
 @json_response
 def create_card():
     data = request.get_json()
-    data_handler.add_card(data)
-    return 'todo', 200
+    if 'board_id' not in data:
+        return {'message': 'no board id received'}, 403
+    data_manager.add_card(data['board_id'])
+    card_id = data_manager.get_highest_card_id()
+    return {'card_id': card_id}, 200
 
 
 @app.route("/remove-card", methods=["POST"])
@@ -47,7 +50,7 @@ def create_card():
 def remove_card():
     data = request.get_json()
     if 'id' not in data:
-        return 'no id received', 403
+        return {'message': 'no card id received'}, 403
     data_manager.remove_card(data['id'])
     return 'todo', 200
 

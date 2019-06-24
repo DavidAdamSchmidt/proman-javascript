@@ -113,7 +113,8 @@ export let dom = {
         for (let card of cards) {
             let cardContainer = document.querySelector(
                 `[data-board-id="${card.board_id}"] [data-column-type="${card.status_id}"]`);
-            let newCard = dom.renderCard(card.id, card.title);
+            let cardTitle = card.title ? card.title : `new card ${card.id}`;
+            let newCard = dom.renderCard(card.id, cardTitle);
 
             cardContainer.insertAdjacentHTML('beforeend', newCard);
         }
@@ -130,26 +131,23 @@ export let dom = {
     },
     addCard: function (e) {
         const board = e.target.closest('.board');
-        const boardColumns = board.querySelector('.board-columns');
-        const cardContainer = boardColumns.querySelector('.board-column-content');
-
-        const cardId = document.querySelectorAll('.card').length + 1;
-        const newCard = dom.renderCard(cardId, `new card ${cardId}`);
-
-        cardContainer.insertAdjacentHTML('beforeend', newCard);
-
-        const removeIcon = document.querySelector(`[data-card-id="${cardId}"] div i`);
-
-        removeIcon.addEventListener('click', e => dom.removeCard(e));
-        addDragAndDrop([cardContainer.lastElementChild]);
 
         dataHandler.createNewCard(
-            `${cardId}`,
             `${board.dataset.boardId}`,
             function (response) {
-                if (response.status !== 200) {
-                    console.log('There was an error while connecting to the "database"')
-                }
+                let cardId = response['card_id'];
+
+                const boardColumns = board.querySelector('.board-columns');
+                const cardContainer = boardColumns.querySelector('.board-column-content');
+
+                const newCard = dom.renderCard(cardId, `new card ${cardId}`);
+
+                cardContainer.insertAdjacentHTML('beforeend', newCard);
+
+                const removeIcon = document.querySelector(`[data-card-id="${cardId}"] div i`);
+
+                removeIcon.addEventListener('click', e => dom.removeCard(e));
+                addDragAndDrop([cardContainer.lastElementChild]);
             }
         )
     },
@@ -159,13 +157,7 @@ export let dom = {
         const card = e.target.closest('.card');
         const cardId = card.dataset.cardId;
 
-        dataHandler.removeCard(cardId, function (cardId, response) {
-            if (response.status === 200) {
-                card.remove();
-            } else {
-                console.log('There was an error during the operation');
-            }
-        })
+        dataHandler.removeCard(cardId, () => card.remove())
     }
     // here comes more features
 };
