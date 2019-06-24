@@ -32,7 +32,7 @@ CREATE TABLE card (
     board_id integer,
     title varchar,
     status_id integer,
-    order_by integer
+    position integer
 );
 
 
