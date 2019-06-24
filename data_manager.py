@@ -30,3 +30,13 @@ def get_cards_for_board(cursor, board_id):
         ''', {'board_id': board_id})
 
     return cursor.fetchall()
+
+
+@connection.connection_handler
+def remove_card(cursor, card_id):
+    cursor.execute(
+        '''
+        DELETE
+        FROM card
+        WHERE id = %(card_id)s
+        ''', {'card_id': card_id})

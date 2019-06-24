@@ -48,7 +48,7 @@ def remove_card():
     data = request.get_json()
     if 'id' not in data:
         return 'no id received', 403
-    data_handler.remove_card(data['id'])
+    data_manager.remove_card(data['id'])
     return 'todo', 200
 
 
