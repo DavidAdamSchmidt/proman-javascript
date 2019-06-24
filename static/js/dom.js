@@ -124,9 +124,9 @@ export let dom = {
             icon.addEventListener('click', e => dom.removeCard(e), )
         }
 
-        cards = document.querySelectorAll('.card');
+        const cardElements = document.querySelectorAll('.card');
 
-        addDragAndDrop(cards);
+        addDragAndDrop(cardElements);
     },
     addCard: function (e) {
         const board = e.target.closest('.board');
