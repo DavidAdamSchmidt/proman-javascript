@@ -1,22 +1,27 @@
 // It uses data_handler.js to visualize elements
-import {dataHandler} from "./data_handler.js";
+import {dataHandler} from './data_handler.js';
 
 export let dom = {
     init: function () {
         // This function should run once, when the page is loaded.
-        const addBoardButton = document.querySelector(".board-add");
-        addBoardButton.addEventListener("click", () => dom.addPublicBoard());
+        const addBoardButton = document.querySelector('.board-add');
+
+        addBoardButton.addEventListener('click', e => dom.addBoard(e));
     },
     clearBoardContainer: function () {
         const boardContainer = document.querySelector('.board-container');
 
         boardContainer.innerHTML = '';
     },
-    loadBoards: function () {
+    renderBoard: function (id, title) {
+        return renderElement(id, title, 'board');
+    },
+    loadBoards: function (callback) {
         // retrieves boards and makes showBoards called
         dataHandler.getBoards(function (boards) {
             dom.clearBoardContainer();
             dom.showBoards(boards);
+            callback();
         });
     },
     showBoards: function (boards) {
@@ -25,85 +30,76 @@ export let dom = {
         const boardContainer = document.querySelector('.board-container');
 
         for (let board of boards) {
-            let outerHtml = `
-            <section class="board" id="board-${board.id}">
-                <div class="board-header"><span class="board-title">${board.title}</span>
-                    <button class="board-add">Add Card</button>
-                    <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
-                </div>
-                <div class="board-columns">
-                    <div class="board-column">
-                        <div class="board-column-title">New</div>
-                        <div class="board-column-content" id="column-new"></div>
-                    </div>
-                    <div class="board-column">
-                        <div class="board-column-title">In progress</div>
-                        <div class="board-column-content" id="column-in-progress"></div>
-                    </div>
-                    <div class="board-column">
-                        <div class="board-column-title">Testing</div>
-                        <div class="board-column-content" id="column-testing"></div>
-                    </div>
-                    <div class="board-column">
-                        <div class="board-column-title">Done</div>
-                        <div class="board-column-content" id="column-done"></div>
-                    </div>
-                </div>
-            </section>`;
-            boardContainer.insertAdjacentHTML('beforeend', outerHtml);
+            let newBoard = dom.renderBoard(board.id, board.title);
+
+            boardContainer.insertAdjacentHTML('beforeend', newBoard);
         }
 
         const buttons = document.querySelectorAll('.board-add');
-        const boardTitles = document.querySelectorAll('.board-title');
 
         for (let button of buttons) {
-            button.addEventListener('click', (e) => dom.addCard(e));
+            button.addEventListener('click', e => dom.addCard(e));
         }
+
+        const boardTitles = document.querySelectorAll('.board-title');
 
         for (let title of boardTitles) {
-            title.addEventListener('click', (e) => dom.renamePublicBoard(e));
-        }
-
-    },
-    addDragAndDrop: function (cards) {
-        for (let card of cards) {
-            card.draggable = true;
-            card.addEventListener('dragstart', e => dom.drag(e))
-        }
-
-        const containers = document.querySelectorAll('.board-column');
-
-        for (let container of containers) {
-            container.addEventListener('dragover', e => dom.allowDrop(e));
-            container.addEventListener('drop', e => dom.drop(e));
+            title.addEventListener('click', e => dom.renameBoard(e));
         }
     },
-    drag: function (e) {
+    addBoard: function (e) {
         e.stopImmediatePropagation();
-        e.dataTransfer.setData('text', e.target.firstElementChild.firstElementChild.id);
+
+        const boardContainer = document.querySelector('.board-container');
+
+        const boardId = document.querySelectorAll('.board').length + 1;
+        const boardTitle = `Board ${boardId}`;
+        const newBoard = dom.renderBoard(boardId, boardTitle);
+
+        boardContainer.insertAdjacentHTML('beforeend', newBoard);
+
+        const titleContainer = document.querySelector(`#board-${boardId} .board-title`);
+        const addCardButton = document.querySelector(`#board-${boardId} .board-add`);
+
+        titleContainer.addEventListener('click', e => dom.renameBoard(e));
+        addCardButton.addEventListener('click', e => dom.addCard(e));
+
+        dataHandler.createNewBoard(
+            `${boardId}`,
+            `${boardTitle}`,
+            response => console.log(response)
+        );
     },
-    allowDrop: function (e) {
-        e.preventDefault();
+    renameBoard: function (e) {
+        const board = e.target.closest('.board');
+
+        const oldTitle = e.target.innerHTML;
+        e.target.innerHTML = '';
+
+        const formTemplate = document.querySelector('#board-rename-template');
+        const formTemplateClone = document.importNode(formTemplate.content, true);
+
+        e.target.appendChild(formTemplateClone);
+
+        const renameField = document.querySelector('.board-rename');
+        const form = renameField.closest('form');
+
+        renameField.focus();
+
+        form.addEventListener('focusout',function () {
+            e.target.innerHTML = oldTitle;
+        });
+
+        form.addEventListener('submit', function () {
+            dataHandler.renameBoard(
+                renameField.value,
+                board.dataset.boardId,
+                response => console.log(response)
+            );
+        });
     },
-    drop: function (e) {
-        e.stopImmediatePropagation();
-        e.preventDefault();
-
-        const cardId = e.dataTransfer.getData('text');
-        const cardContainer = document.querySelector(`#${cardId}`).parentElement.parentElement;
-
-        if (e.target.className === 'board-column') {
-            e.target.lastElementChild.appendChild(cardContainer);
-        } else if (e.target.className === 'board-column-title') {
-            e.target.nextElementSibling.appendChild(cardContainer)
-        } else {
-            let element = e.target;
-
-            while (element.className !== 'board-column-content') {
-                element = element.parentElement;
-            }
-            element.appendChild(cardContainer)
-        }
+    renderCard: function (id, title) {
+        return renderElement(id, title, 'card');
     },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
@@ -111,125 +107,116 @@ export let dom = {
             dom.showCards(cards);
         });
     },
-    addCard: function (e) {
-        const cardContainer = e.target.parentElement.nextElementSibling.firstElementChild.lastElementChild;
-        const boardId = e.target.parentElement.parentElement.id;
-        const newId = document.querySelectorAll('.card').length + 1;
-
-        const outerHTML = `<div class="card"><div class="card-remove"><i id="card-${newId}" class="fas fa-trash-alt"></i></div><div class="card-title">new card ${newId}</div></div>`;
-
-        cardContainer.insertAdjacentHTML('beforeend', outerHTML);
-
-        const removeButton = document.querySelector(`#card-${newId}`);
-
-        removeButton.addEventListener('click', e => dom.removeCard(e));
-        dom.addDragAndDrop([cardContainer.lastElementChild]);
-
-        dataHandler.createNewCard(
-            `${newId}`,
-            `${boardId.slice(6)}`,
-            function (response) {
-                if (response.status !== 200) {
-                    console.log('There was an error while connecting to the "database"')
-                }
-            })
-    },
     showCards: function (cards) {
         // shows the cards of a board
         // it adds necessary event listeners also
         for (let card of cards) {
-            const cardContainer = document.querySelector(`#board-${card.board_id} #column-${card.status_id}`);
-            let outerHTML = `<div class="card"><div class="card-remove"><i id="card-${card.id}" class="fas fa-trash-alt"></i></div><div class="card-title">${card.title}</div></div>`;
+            let cardContainer = document.querySelector(
+                `[data-board-id="${card.board_id}"] [data-column-type="${card.status_id}"]`);
+            let newCard = dom.renderCard(card.id, card.title);
 
-            cardContainer.insertAdjacentHTML('beforeend', outerHTML)
+            cardContainer.insertAdjacentHTML('beforeend', newCard);
         }
 
-        const removeIcons = document.querySelectorAll('.card-remove:first-child i');
-        const cardsContainers = document.querySelectorAll('.card');
+        const removeIcons = document.querySelectorAll('i');
 
         for (let icon of removeIcons) {
             icon.addEventListener('click', e => dom.removeCard(e), )
         }
 
-        dom.addDragAndDrop(cardsContainers);
+        const cardElements = document.querySelectorAll('.card');
+
+        addDragAndDrop(cardElements);
+    },
+    addCard: function (e) {
+        const board = e.target.closest('.board');
+        const boardColumns = board.querySelector('.board-columns');
+        const cardContainer = boardColumns.querySelector('.board-column-content');
+
+        const cardId = document.querySelectorAll('.card').length + 1;
+        const newCard = dom.renderCard(cardId, `new card ${cardId}`);
+
+        cardContainer.insertAdjacentHTML('beforeend', newCard);
+
+        const removeIcon = document.querySelector(`[data-card-id="${cardId}"] div i`);
+
+        removeIcon.addEventListener('click', e => dom.removeCard(e));
+        addDragAndDrop([cardContainer.lastElementChild]);
+
+        dataHandler.createNewCard(
+            `${cardId}`,
+            `${board.dataset.boardId}`,
+            function (response) {
+                if (response.status !== 200) {
+                    console.log('There was an error while connecting to the "database"')
+                }
+            }
+        )
     },
     removeCard: function (e) {
         e.stopImmediatePropagation();
 
-        const cardId = e.target.id.slice(5);
+        const card = e.target.closest('.card');
+        const cardId = card.dataset.cardId;
 
         dataHandler.removeCard(cardId, function (cardId, response) {
             if (response.status === 200) {
-                document.querySelector(`#card-${cardId}`).parentElement.parentElement.remove()
+                card.remove();
             } else {
-                console.log('There was an error during the operation')
+                console.log('There was an error during the operation');
             }
         })
-    },
-    addPublicBoard: function () {
-
-        const boardContainer = document.querySelector(".board-container");
-        const newBoardId = document.querySelectorAll(".board").length+1;
-        const newBoardTitle = `Board ${newBoardId}`;
-
-        const outerHTML = `
-        <section class="board" id="board-${newBoardId}">
-                <div class="board-header"><span class="board-title">${newBoardTitle}</span>
-                    <button class="board-add">Add Card</button>
-                    <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
-                </div>
-                <div class="board-columns">
-                    <div class="board-column">
-                        <div class="board-column-title">New</div>
-                        <div class="board-column-content" id="column-new"></div>
-                    </div>
-                    <div class="board-column">
-                        <div class="board-column-title">In progress</div>
-                        <div class="board-column-content" id="column-in-progress"></div>
-                    </div>
-                    <div class="board-column">
-                        <div class="board-column-title">Testing</div>
-                        <div class="board-column-content" id="column-testing"></div>
-                    </div>
-                    <div class="board-column">
-                        <div class="board-column-title">Done</div>
-                        <div class="board-column-content" id="column-done"></div>
-                    </div>
-                </div>
-            </section>\
-            `;
-
-        boardContainer.insertAdjacentHTML("beforeend", outerHTML);
-        const BoardName = document.querySelector(`#board-${newBoardId} .board-title`);
-        const BoardButton = document.querySelector(`#board-${newBoardId} .board-add`);
-        console.log(BoardButton);
-        BoardName.addEventListener('click', (e) => dom.renamePublicBoard(e));
-        BoardButton.addEventListener('click', (e) => dom.addCard(e));
-
-        dataHandler.createNewBoard(
-            `${newBoardId}`,
-            `${newBoardTitle}`,
-            function (response) {
-                console.log(response);
-            })
-    },
-    renamePublicBoard: function (e) {
-        const oldTitle = e.target.innerHTML;
-        let renamedBoardId = e.target.parentElement.parentElement.id.slice(6);
-        e.target.innerHTML = `
-        <form class="board-submit">
-            <input class="board-rename" type="text" placeholder="Press Enter to save your title!" required>
-        </form>`;
-        let renameField = document.querySelector(".board-rename");
-        renameField.focus();
-        renameField.parentElement.addEventListener("focusout",function () {
-            e.target.innerHTML = oldTitle
-        });
-        renameField.parentElement.addEventListener('submit', function () {
-            dataHandler.renameBoard(renameField.value, renamedBoardId, function (response) {
-                console.log(response)
-            })
-        });
     }
     // here comes more features
 };
+
+function renderElement(id, title, type) {
+    // this function can only be called by the renderBoard and renderCard methods of the dom object
+    if (type !== 'board' && type !== 'card') {
+        throw 'Invalid argument provided for parameter "type"!';
+    }
+
+    const source = document.querySelector(`#${type}-template`).innerHTML;
+    const templateRenderer = Handlebars.compile(source);
+
+    return templateRenderer({
+        id: id,
+        title: title
+    }).trim();
+}
+
+function addDragAndDrop(cards) {
+    for (let card of cards) {
+        card.draggable = true;
+        card.addEventListener('dragstart', e => onDrag(e))
+    }
+
+    const containers = document.querySelectorAll('.board-column');
+
+    for (let container of containers) {
+        container.addEventListener('dragover', e => allowDrop(e));
+        container.addEventListener('drop', e => onDrop(e));
+    }
+}
+
+function onDrag(e) {
+    e.stopImmediatePropagation();
+
+    e.dataTransfer.setData('text', e.target.closest('.card').dataset.cardId);
+}
+
+function allowDrop(e) {
+    e.preventDefault();
+}
+
+function onDrop(e) {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+
+    const cardId = e.dataTransfer.getData('text');
+    const card = document.querySelector(`[data-card-id="${cardId}"]`);
+    const targetColumn = e.target.closest('.board-column');
+    const cardContainer = targetColumn.querySelector('.board-column-content');
+
+    cardContainer.appendChild(card);
+}
