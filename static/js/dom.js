@@ -5,8 +5,10 @@ export let dom = {
     init: function () {
         // This function should run once, when the page is loaded.
         const addBoardButton = document.querySelector('.board-add');
+        const registrationButton = document.querySelector('#register');
 
         addBoardButton.addEventListener('click', e => dom.addBoard(e));
+        registrationButton.addEventListener('click', () => dom.registerUser())
     },
     clearBoardContainer: function () {
         const boardContainer = document.querySelector('.board-container');
@@ -185,6 +187,15 @@ export let dom = {
         const cardId = card.dataset.cardId;
 
         dataHandler.removeCard(cardId, () => card.remove())
+    },
+    registerUser: function () {
+        dataHandler.registerUser(function (response) {
+            if (response.status === 200) {
+                console.log('ok') // TODO: handle successful registration here
+            } else {
+                console.log(response.body['message']);
+            }
+        })
     }
     // here comes more features
 };
