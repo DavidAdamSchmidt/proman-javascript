@@ -77,6 +77,14 @@ export let dom = {
         titleContainer.addEventListener('click', e => dom.renameBoard(e));
         addCardButton.addEventListener('click', e => dom.addCard(e));
 
+        const board = titleContainer.closest('.board');
+        const columns = board.querySelectorAll('.board-column');
+
+        for (let column of columns) {
+            column.addEventListener('dragover', e => allowDrop(e));
+            column.addEventListener('drop', e => onDrop(e));
+        }
+
         titleContainer.click();
 
         const addBoardButton = document.querySelector('.board-add');
