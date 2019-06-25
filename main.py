@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, request
-from util import json_response
+from util import json_response, ok_200, error_403
 
 import data_handler
 
@@ -36,11 +36,13 @@ def add_board():
 def rename_board():
     data = request.get_json()
     if 'title' not in data:
-        return {'message': 'no title received'}, 403
+        return error_403('no title received')
     if 'id' not in data:
-        return {'message': 'no id received'}, 403
-    data_handler.rename_board(data['id'], data['title'])
-    return {}
+        return error_403('no id received')
+    board_id = data['id']
+    title = data['title']
+    data_handler.rename_board(board_id, title)
+    return ok_200(f'title of board #{board_id} was successfully updated')
 
 
 @app.route("/get-cards/<int:board_id>")
@@ -58,7 +60,7 @@ def get_cards_for_board(board_id: int):
 def add_card():
     data = request.get_json()
     if 'board_id' not in data:
-        return {'message': 'no board id received'}, 403
+        return error_403('no id received')
     data_handler.add_card(data['board_id'])
     card_id = data_handler.get_highest_card_id()
     return {'card_id': card_id}
@@ -69,25 +71,26 @@ def add_card():
 def remove_card():
     data = request.get_json()
     if 'id' not in data:
-        return {'message': 'no card id received'}, 403
-    data_handler.remove_card(data['id'])
-    return {}
+        return error_403('no card id received')
+    card_id = data['id']
+    data_handler.remove_card(card_id)
+    return ok_200(f'card #{card_id} was successfully removed')
 
 
 @app.route("/register", methods=["POST"])
 @json_response
 def register_user():
     if 'username' not in request.form:
-        return {'message': 'no username received'}, 403
+        return error_403('no username received')
     if 'password' not in request.form:
-        return {'message': 'no password received'}, 403
+        return error_403('no password received')
     username = request.form['username']
     password = request.form['password']
     user_exists = data_handler.check_if_user_exists(username)
     if user_exists:
-        return {'message': 'user already exists'}, 403
+        return error_403('user already exists')
     data_handler.register_user(username, password)
-    return {'message': 'ok'}
+    return ok_200(f'user {username} was successfully saved in the database')
 
 
 def main():

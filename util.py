@@ -16,3 +16,11 @@ def json_response(func):
         return jsonify(route_response)
 
     return decorated_function
+
+
+def ok_200(message):
+    return {'message': message}, 200
+
+
+def error_403(message):
+    return {'message': message}, 403
