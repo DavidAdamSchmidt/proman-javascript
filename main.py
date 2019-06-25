@@ -1,7 +1,7 @@
 from flask import Flask, render_template, url_for, request
 from util import json_response
 
-import data_manager
+import data_handler
 
 app = Flask(__name__)
 
@@ -20,7 +20,7 @@ def get_boards():
     """
     All the boards
     """
-    return data_manager.get_boards()
+    return data_handler.get_boards()
 
 
 @app.route("/get-cards/<int:board_id>")
@@ -30,7 +30,7 @@ def get_cards_for_board(board_id: int):
     All cards that belongs to a board
     :param board_id: id of the parent board
     """
-    return data_manager.get_cards_for_board(board_id)
+    return data_handler.get_cards_for_board(board_id)
 
 
 @app.route("/create-card", methods=["POST"])
@@ -39,8 +39,8 @@ def create_card():
     data = request.get_json()
     if 'board_id' not in data:
         return {'message': 'no board id received'}, 403
-    data_manager.add_card(data['board_id'])
-    card_id = data_manager.get_highest_card_id()
+    data_handler.add_card(data['board_id'])
+    card_id = data_handler.get_highest_card_id()
     return {'card_id': card_id}, 200
 
 
@@ -50,15 +50,15 @@ def remove_card():
     data = request.get_json()
     if 'id' not in data:
         return {'message': 'no card id received'}, 403
-    data_manager.remove_card(data['id'])
+    data_handler.remove_card(data['id'])
     return 'todo', 200
 
 
 @app.route("/create-board", methods=["POST"])
 @json_response
 def create_board():
-    data_manager.add_board()
-    board_id = data_manager.get_highest_board_id()
+    data_handler.add_board()
+    board_id = data_handler.get_highest_board_id()
     return {'board_id': board_id}, 200
 
 
@@ -70,7 +70,7 @@ def rename_board():
         return {'message': 'no title received'}, 403
     if 'id' not in data:
         return {'message': 'no id received'}, 403
-    data_manager.rename_board(data['id'], data['title'])
+    data_handler.rename_board(data['id'], data['title'])
     return {'message': 'ok'}, 200
 
 
