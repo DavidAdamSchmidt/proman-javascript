@@ -32,6 +32,10 @@ button{
     padding: 4px 10px;
 }
 
+button:disabled {
+  background: #808080;
+}
+
 #boards {
     background-color: green;
 }

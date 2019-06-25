@@ -50,6 +50,7 @@ export let dom = {
     },
     addBoard: function (e) {
         e.stopImmediatePropagation();
+        e.target.disabled = true;
 
         dataHandler.createNewBoard(
             function (response) {
@@ -73,6 +74,12 @@ export let dom = {
 
         titleContainer.addEventListener('click', e => dom.renameBoard(e));
         addCardButton.addEventListener('click', e => dom.addCard(e));
+
+        titleContainer.click();
+
+        const addBoardButton = document.querySelector('.board-add');
+
+        addBoardButton.disabled = false;
     },
     renameBoard: function (e) {
         const titleContainer = e.target;
