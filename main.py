@@ -23,6 +23,26 @@ def get_boards():
     return data_handler.get_boards()
 
 
+@app.route("/create-board", methods=["POST"])
+@json_response
+def add_board():
+    data_handler.add_board()
+    board_id = data_handler.get_highest_board_id()
+    return {'board_id': board_id}
+
+
+@app.route("/rename-board", methods=["POST"])
+@json_response
+def rename_board():
+    data = request.get_json()
+    if 'title' not in data:
+        return {'message': 'no title received'}, 403
+    if 'id' not in data:
+        return {'message': 'no id received'}, 403
+    data_handler.rename_board(data['id'], data['title'])
+    return {}
+
+
 @app.route("/get-cards/<int:board_id>")
 @json_response
 def get_cards_for_board(board_id: int):
@@ -35,13 +55,13 @@ def get_cards_for_board(board_id: int):
 
 @app.route("/create-card", methods=["POST"])
 @json_response
-def create_card():
+def add_card():
     data = request.get_json()
     if 'board_id' not in data:
         return {'message': 'no board id received'}, 403
     data_handler.add_card(data['board_id'])
     card_id = data_handler.get_highest_card_id()
-    return {'card_id': card_id}, 200
+    return {'card_id': card_id}
 
 
 @app.route("/remove-card", methods=["POST"])
@@ -51,35 +71,11 @@ def remove_card():
     if 'id' not in data:
         return {'message': 'no card id received'}, 403
     data_handler.remove_card(data['id'])
-    return 'todo', 200
-
-
-@app.route("/create-board", methods=["POST"])
-@json_response
-def create_board():
-    data_handler.add_board()
-    board_id = data_handler.get_highest_board_id()
-    return {'board_id': board_id}, 200
-
-
-@app.route("/rename-board", methods=["POST"])
-@json_response
-def rename_board():
-    data = request.get_json()
-    if 'title' not in data:
-        return {'message': 'no title received'}, 403
-    if 'id' not in data:
-        return {'message': 'no id received'}, 403
-    data_handler.rename_board(data['id'], data['title'])
-    return {'message': 'ok'}, 200
+    return {}
 
 
 def main():
-    app.run(
-        host='0.0.0.0',
-        port=5000,
-        debug=True,
-    )
+    app.run(host='0.0.0.0', debug=True)
 
     # Serving the favicon
     with app.app_context():
@@ -88,4 +84,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

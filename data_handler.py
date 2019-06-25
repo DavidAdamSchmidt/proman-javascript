@@ -6,8 +6,7 @@ from psycopg2 import sql
 def get_boards(cursor):
     cursor.execute(
         '''
-        SELECT
-               *
+        SELECT *
         FROM board
         ORDER BY id
         ''')
@@ -34,12 +33,17 @@ def rename_board(cursor, board_id, new_title):
         ''', {'board_id': board_id, 'new_title': new_title})
 
 
+def get_highest_board_id():
+    result = get_highest_id('board')
+    if result:
+        return result['id']
+
+
 @connection.connection_handler
 def get_cards_for_board(cursor, board_id):
     cursor.execute(
         '''
-        SELECT
-               c.id,
+        SELECT c.id,
                c.board_id,
                c.title,
                s.title AS status_id,
@@ -54,6 +58,15 @@ def get_cards_for_board(cursor, board_id):
 
 
 @connection.connection_handler
+def add_card(cursor, board_id):
+    cursor.execute(
+        '''
+        INSERT INTO card(board_id, status_id, position)
+        VALUES(%(board_id)s, 0, 0)
+        ''', {'board_id': board_id})
+
+
+@connection.connection_handler
 def remove_card(cursor, card_id):
     cursor.execute(
         '''
@@ -63,23 +76,8 @@ def remove_card(cursor, card_id):
         ''', {'card_id': card_id})
 
 
-@connection.connection_handler
-def add_card(cursor, board_id):
-    cursor.execute(
-        '''
-        INSERT INTO card(board_id, status_id, position)
-        VALUES(%(board_id)s, 0, 0)
-        ''', {'board_id': board_id})
-
-
 def get_highest_card_id():
     result = get_highest_id('card')
-    if result:
-        return result['id']
-
-
-def get_highest_board_id():
-    result = get_highest_id('board')
     if result:
         return result['id']
 
