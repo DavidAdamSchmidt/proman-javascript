@@ -4,6 +4,8 @@ ALTER TABLE IF EXISTS ONLY status
     DROP CONSTRAINT IF EXISTS pk_status_id CASCADE;
 ALTER TABLE IF EXISTS ONLY card
     DROP CONSTRAINT IF EXISTS pk_card_id CASCADE;
+ALTER TABLE IF EXISTS ONLY account
+    DROP CONSTRAINT IF EXISTS pk_account_id;
 
 ALTER TABLE IF EXISTS ONLY card
     DROP CONSTRAINT IF EXISTS fk_board_id;
@@ -35,6 +37,13 @@ CREATE TABLE card (
     position integer
 );
 
+DROP TABLE IF EXISTS account;
+CREATE TABLE account (
+    id serial NOT NULL,
+    username varchar(20),
+    password varchar
+);
+
 
 ALTER TABLE ONLY board
     ADD CONSTRAINT pk_board_id PRIMARY KEY(id);
@@ -42,6 +51,8 @@ ALTER TABLE ONLY status
     ADD CONSTRAINT pk_status_id PRIMARY KEY(id);
 ALTER TABLE ONLY card
     ADD CONSTRAINT pk_card_id PRIMARY KEY(id);
+ALTER TABLE ONLY account
+    ADD CONSTRAINT pk_account_id PRIMARY KEY(id);
 
 ALTER TABLE ONLY card
     ADD CONSTRAINT fk_board_id FOREIGN KEY(board_id)

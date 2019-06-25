@@ -1,5 +1,11 @@
 import connection
+import bcrypt
 from psycopg2 import sql
+
+
+def hash_password(plain_text_password):
+    hashed_bytes = bcrypt.hashpw(plain_text_password.encode('utf-8'), bcrypt.gensalt())
+    return hashed_bytes.decode('utf-8')
 
 
 @connection.connection_handler
@@ -94,3 +100,25 @@ def get_highest_id(cursor, table):
                 ''').format(table=sql.Identifier(table)))
 
     return cursor.fetchone()
+
+
+@connection.connection_handler
+def check_if_user_exists(cursor, username):
+    cursor.execute(
+        '''
+        SELECT *
+        FROM account
+        WHERE username = %(username)s 
+        ''', {'username': username})
+
+    return bool(cursor.fetchone())
+
+
+@connection.connection_handler
+def register_user(cursor, username, password):
+    hashed_password = hash_password(password)
+    cursor.execute(
+        '''
+        INSERT INTO account(username, password)
+        VALUES (%(username)s, %(password)s)
+        ''', {'username': username, 'password': hashed_password})

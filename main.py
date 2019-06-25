@@ -74,6 +74,22 @@ def remove_card():
     return {}
 
 
+@app.route("/register", methods=["POST"])
+@json_response
+def register_user():
+    if 'username' not in request.form:
+        return {'message': 'no username received'}, 403
+    if 'password' not in request.form:
+        return {'message': 'no password received'}, 403
+    username = request.form['username']
+    password = request.form['password']
+    user_exists = data_handler.check_if_user_exists(username)
+    if user_exists:
+        return {'message': 'user already exists'}, 403
+    data_handler.register_user(username, password)
+    return {'message': 'ok'}
+
+
 def main():
     app.run(host='0.0.0.0', debug=True)
 
