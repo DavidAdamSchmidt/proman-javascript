@@ -1,7 +1,6 @@
 from flask import Flask, render_template, url_for, request
 from util import json_response
 
-import data_handler
 import data_manager
 
 app = Flask(__name__)
