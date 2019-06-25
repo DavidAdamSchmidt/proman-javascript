@@ -67,8 +67,12 @@ def create_board():
 @json_response
 def rename_board():
     data = request.get_json()
-    data_handler.rename_board(data)
-    return 'todo', 200
+    if 'title' not in data:
+        return {'message': 'no title received'}, 403
+    if 'id' not in data:
+        return {'message': 'no id received'}, 403
+    data_manager.rename_board(data['id'], data['title'])
+    return {'message': 'ok'}, 200
 
 
 def main():

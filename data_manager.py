@@ -9,6 +9,7 @@ def get_boards(cursor):
         SELECT
                *
         FROM board
+        ORDER BY id
         ''')
 
     return cursor.fetchall()
@@ -21,6 +22,16 @@ def add_board(cursor):
         INSERT INTO board(title)
         VALUES(NULL)
         ''')
+
+
+@connection.connection_handler
+def rename_board(cursor, board_id, new_title):
+    cursor.execute(
+        '''
+        UPDATE board
+        SET title = %(new_title)s
+        WHERE id = %(board_id)s
+        ''', {'board_id': board_id, 'new_title': new_title})
 
 
 @connection.connection_handler

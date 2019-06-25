@@ -90,7 +90,7 @@ export let dataHandler = {
     renameBoard: function (newName, boardId, callback) {
         let data = JSON.stringify({
             title: newName,
-            board_id: boardId,
+            id: boardId,
         });
 
         this._api_post('/rename-board', data, callback);

@@ -75,32 +75,42 @@ export let dom = {
         addCardButton.addEventListener('click', e => dom.addCard(e));
     },
     renameBoard: function (e) {
-        const board = e.target.closest('.board');
+        const titleContainer = e.target;
+        const board = titleContainer.closest('.board');
 
-        const oldTitle = e.target.innerHTML;
-        e.target.innerHTML = '';
+        const oldTitle = titleContainer.innerHTML;
+        titleContainer.innerHTML = '';
 
         const formTemplate = document.querySelector('#board-rename-template');
         const formTemplateClone = document.importNode(formTemplate.content, true);
 
-        e.target.appendChild(formTemplateClone);
+        titleContainer.appendChild(formTemplateClone);
 
         const renameField = document.querySelector('.board-rename');
-        const form = renameField.closest('form');
 
         renameField.focus();
 
-        form.addEventListener('focusout', function () {
-            e.target.innerHTML = oldTitle;
+        renameField.addEventListener('focusout', function () {
+            titleContainer.innerHTML = oldTitle;
         });
 
-        form.addEventListener('submit', function () {
-            dataHandler.renameBoard(
-                renameField.value,
-                board.dataset.boardId,
-                response => console.log(response)
-            );
+        renameField.addEventListener('keydown', function (e) {
+            if (e.keyCode === 13) {
+                handleRenaming();
+            }
         });
+
+        function handleRenaming() {
+            const newTitle = renameField.value;
+            dataHandler.renameBoard(newTitle, board.dataset.boardId, function (response) {
+                if (response.status === 200) {
+                    titleContainer.innerHTML = newTitle;
+                } else {
+                    console.log('There was an error while connecting to the database');
+                    titleContainer.innerHTML = oldTitle;
+                }
+            })
+        }
     },
     renderCard: function (id, title) {
         return renderElement(id, title, 'card');
