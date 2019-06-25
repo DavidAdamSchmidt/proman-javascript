@@ -1,4 +1,5 @@
 import connection
+from psycopg2 import sql
 
 
 @connection.connection_handler
@@ -11,6 +12,15 @@ def get_boards(cursor):
         ''')
 
     return cursor.fetchall()
+
+
+@connection.connection_handler
+def add_board(cursor):
+    cursor.execute(
+        '''
+        INSERT INTO board(title)
+        VALUES(NULL)
+        ''')
 
 
 @connection.connection_handler
@@ -51,14 +61,27 @@ def add_card(cursor, board_id):
         ''', {'board_id': board_id})
 
 
-@connection.connection_handler
-def get_highest_card_id(cursor):
-    cursor.execute(
-        '''
-        SELECT MAX(id) AS card_id
-        FROM card
-        ''')
-
-    result = cursor.fetchone()
+def get_highest_card_id():
+    result = get_highest_id('card')
     if result:
-        return result['card_id']
+        return result['id']
+
+
+def get_highest_board_id():
+    result = get_highest_id('board')
+    if result:
+        return result['id']
+
+
+@connection.connection_handler
+def get_highest_id(cursor, table):
+    # this function should only be used by get_highest_card_id and get_highest_board_id
+    if table not in ['board', 'card']:
+        raise ValueError('Invalid argument provided for parameter "table"')
+    cursor.execute(
+        sql.SQL('''
+                SELECT MAX(id) AS id
+                FROM {table}
+                ''').format(table=sql.Identifier(table)))
+
+    return cursor.fetchone()

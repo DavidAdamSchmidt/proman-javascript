@@ -30,7 +30,8 @@ export let dom = {
         const boardContainer = document.querySelector('.board-container');
 
         for (let board of boards) {
-            let newBoard = dom.renderBoard(board.id, board.title);
+            let boardTitle = board.title ? board.title : `Board ${board.id}`;
+            let newBoard = dom.renderBoard(board.id, boardTitle);
 
             boardContainer.insertAdjacentHTML('beforeend', newBoard);
         }
@@ -50,25 +51,28 @@ export let dom = {
     addBoard: function (e) {
         e.stopImmediatePropagation();
 
+        dataHandler.createNewBoard(
+            function (response) {
+                if (response.status === 200) {
+                    dom.showBoard(response.body['board_id']);
+                } else {
+                    console.log('There was an error while connecting to the database');
+                }
+            }
+        );
+    },
+    showBoard: function (boardId) {
         const boardContainer = document.querySelector('.board-container');
 
-        const boardId = document.querySelectorAll('.board').length + 1;
-        const boardTitle = `Board ${boardId}`;
-        const newBoard = dom.renderBoard(boardId, boardTitle);
+        const newBoard = dom.renderBoard(boardId, `Board ${boardId}`);
 
         boardContainer.insertAdjacentHTML('beforeend', newBoard);
 
-        const titleContainer = document.querySelector(`#board-${boardId} .board-title`);
-        const addCardButton = document.querySelector(`#board-${boardId} .board-add`);
+        const titleContainer = document.querySelector(`[data-board-id="${boardId}"] .board-title`);
+        const addCardButton = document.querySelector(`[data-board-id="${boardId}"] .board-add`);
 
         titleContainer.addEventListener('click', e => dom.renameBoard(e));
         addCardButton.addEventListener('click', e => dom.addCard(e));
-
-        dataHandler.createNewBoard(
-            `${boardId}`,
-            `${boardTitle}`,
-            response => console.log(response)
-        );
     },
     renameBoard: function (e) {
         const board = e.target.closest('.board');

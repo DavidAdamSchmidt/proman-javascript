@@ -58,9 +58,9 @@ def remove_card():
 @app.route("/create-board", methods=["POST"])
 @json_response
 def create_board():
-    data = request.get_json()
-    data_handler.add_board(data)
-    return 'todo', 200
+    data_manager.add_board()
+    board_id = data_manager.get_highest_board_id()
+    return {'board_id': board_id}, 200
 
 
 @app.route("/rename-board", methods=["POST"])
