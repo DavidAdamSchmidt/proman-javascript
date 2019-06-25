@@ -131,22 +131,31 @@ export let dom = {
     },
     addCard: function (e) {
         const board = e.target.closest('.board');
+        const boardId = board.dataset.boardId;
 
-        dataHandler.createNewCard(`${board.dataset.boardId}`, function (response) {
-            const cardId = response['card_id'];
+        dataHandler.createNewCard(
+            `${board.dataset.boardId}`,
+            function (response) {
+                if (response.status === 200) {
+                    dom.showCard(boardId, response.body['card_id']);
+                } else {
+                    console.log('There was an error while connecting to the database');
+                }
+            })
+    },
+    showCard: function (boardId, cardId) {
+        const board = document.querySelector(`[data-board-id="${boardId}"]`);
+        const boardColumns = board.querySelector('.board-columns');
+        const cardContainer = boardColumns.querySelector('.board-column-content');
 
-            const boardColumns = board.querySelector('.board-columns');
-            const cardContainer = boardColumns.querySelector('.board-column-content');
+        const newCard = dom.renderCard(cardId, `new card ${cardId}`);
 
-            const newCard = dom.renderCard(cardId, `new card ${cardId}`);
+        cardContainer.insertAdjacentHTML('beforeend', newCard);
 
-            cardContainer.insertAdjacentHTML('beforeend', newCard);
+        const removeIcon = document.querySelector(`[data-card-id="${cardId}"] div i`);
 
-            const removeIcon = document.querySelector(`[data-card-id="${cardId}"] div i`);
-
-            removeIcon.addEventListener('click', e => dom.removeCard(e));
-            addDragAndDrop([cardContainer.lastElementChild]);
-        })
+        removeIcon.addEventListener('click', e => dom.removeCard(e));
+        addDragAndDrop([cardContainer.lastElementChild]);
     },
     removeCard: function (e) {
         e.stopImmediatePropagation();

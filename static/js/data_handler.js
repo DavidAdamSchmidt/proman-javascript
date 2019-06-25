@@ -28,8 +28,9 @@ export let dataHandler = {
             },
             body: data
         })
-        .then(response => response.json()) // TODO: check status code here
-        .then(response => callback(response))
+        .then(response => response.json()
+        .then(data => ({status: response.status, body: data})))
+        .then(statusAndData => callback(statusAndData));
     },
     init: function () {
     },
