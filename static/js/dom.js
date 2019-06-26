@@ -4,9 +4,60 @@ import {dataHandler} from './data_handler.js';
 export let dom = {
     init: function () {
         // This function should run once, when the page is loaded.
+        dom.displayNavBar();
+
         const addBoardButton = document.querySelector('.board-add');
 
         addBoardButton.addEventListener('click', e => dom.addBoard(e));
+    },
+    displayRegistrationForm: function () {
+        const list = document.querySelector('ul');
+
+        list.innerHTML = '';
+
+        const formTemplate = document.querySelector('#registration-form-template');
+        const formTemplateClone = document.importNode(formTemplate.content, true);
+
+        list.appendChild(formTemplateClone);
+
+        const hideFormLink = document.querySelector('#hide-form');
+
+        hideFormLink.addEventListener('click', () => dom.displayNavBar());
+    },
+    displayLoginForm: function () {
+        const list = document.querySelector('ul');
+
+        list.innerHTML = '';
+
+        const formTemplate = document.querySelector('#login-form-template');
+        const formTemplateClone = document.importNode(formTemplate.content, true);
+
+        list.appendChild(formTemplateClone);
+
+        const hideFormLink = document.querySelector('#hide-form');
+
+        hideFormLink.addEventListener('click', () => dom.displayNavBar());
+    },
+    displayNavBar: function () {
+        const list = document.querySelector('ul');
+
+        list.innerHTML = '';
+
+        const navbarTemplate = document.querySelector('#navbar-template');
+        const navbarTemplateClone = document.importNode(navbarTemplate.content, true);
+
+        list.appendChild(navbarTemplateClone);
+
+        const registrationButton = document.querySelector('#registration');
+        const loginButton = document.querySelector('#login');
+
+        if (typeof (registrationButton) != 'undefined' && registrationButton != null) {
+            registrationButton.addEventListener('click', () => dom.displayRegistrationForm());
+        }
+
+        if (typeof (loginButton) != 'undefined' && loginButton != null) {
+            loginButton.addEventListener('click', () => dom.displayLoginForm())
+        }
     },
     clearBoardContainer: function () {
         const boardContainer = document.querySelector('.board-container');

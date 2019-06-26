@@ -29,7 +29,8 @@
 <script id="card-template" type="text/x-handlebars-template">
     <div class="card" data-card-id="{{id}}">
         <div class="card-remove"><i class="fas fa-trash-alt"></i>
-        </div><div class="card-title">{{title}}</div>
+        </div>
+        <div class="card-title">{{title}}</div>
     </div>
 </script>
 {% endraw %}
@@ -38,4 +39,40 @@
     <label>
         <input type="text" class="board-rename" placeholder="Press Enter to save your title!" required>
     </label>
+</template>
+
+<template id="registration-form-template">
+    <li><a class="li-left" id="hide-form" href="#">Hide form</a></li>
+    <li class="li-right">
+        <form action="{{ url_for('register_user') }}" method="post">
+            <label for="registration-username">Username:</label>
+            <input type="text" id="registration-username" name="username" minlength="5" maxlength="20" required>
+            <label for="registration-password">Password:</label>
+            <input type="password" id="registration-password" name="password" minlength="5" maxlength="30" required>
+            <input type="submit" id="register" value="Register">
+        </form>
+    </li>
+</template>
+
+<template id="login-form-template">
+    <li><a class="li-left" id="hide-form" href="#">Hide form</a></li>
+    <li class="li-right">
+        <form action="{{ url_for('login_user') }}" method="post">
+            <label for="login-username">Username:</label>
+            <input type="text" id="login-username" name="username" minlength="5" maxlength="20" required>
+            <label for="login-password">Password:</label>
+            <input type="password" id="login-password" name="password" minlength="5" maxlength="30" required>
+            <input type="submit" id="login" class="button" value="Login">
+        </form>
+    </li>
+</template>
+
+<template id="navbar-template">
+    {% if 'username' in session %}
+        <li class="li-right"><a href="{{ url_for('logout_user') }}">Logout</a></li>
+        <li class="li-right"><span>Logged in as <strong>{{ session.username }}</strong></span></li>
+    {% else %}
+        <li class="li-right" id="registration"><a href="#">Register</a></li>
+        <li class="li-right" id="login"><a href="#">Login</a></li>
+    {% endif %}
 </template>

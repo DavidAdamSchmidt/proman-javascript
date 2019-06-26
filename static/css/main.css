@@ -23,11 +23,11 @@ h1{
     transform: scale(1.2, 1);
 }
 
-button{
+button, input[type="submit"] {
     background: #222;
     color: #fff;
     border: none;
-    font-size: 14px;
+    font-size: 16px;
     font-family: sans-serif;
     padding: 4px 10px;
 }
@@ -134,4 +134,38 @@ section.board{
 
 .card-title{
     padding-right: 16px;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+    height: 50px;
+}
+
+li {
+    float: left;
+}
+
+li a, li form, li span {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+/* Change the link color to #111 (black) on hover */
+li a:hover {
+    background-color: #111;
+}
+
+.li-left {
+    float: left;
+}
+
+.li-right {
+    float: right;
 }
