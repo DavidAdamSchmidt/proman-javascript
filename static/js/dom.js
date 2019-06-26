@@ -11,32 +11,10 @@ export let dom = {
         addBoardButton.addEventListener('click', e => dom.addBoard(e));
     },
     displayRegistrationForm: function () {
-        const list = document.querySelector('ul');
-
-        list.innerHTML = '';
-
-        const formTemplate = document.querySelector('#registration-form-template');
-        const formTemplateClone = document.importNode(formTemplate.content, true);
-
-        list.appendChild(formTemplateClone);
-
-        const hideFormLink = document.querySelector('#hide-form');
-
-        hideFormLink.addEventListener('click', () => dom.displayNavBar());
+        displayForm('register');
     },
     displayLoginForm: function () {
-        const list = document.querySelector('ul');
-
-        list.innerHTML = '';
-
-        const formTemplate = document.querySelector('#login-form-template');
-        const formTemplateClone = document.importNode(formTemplate.content, true);
-
-        list.appendChild(formTemplateClone);
-
-        const hideFormLink = document.querySelector('#hide-form');
-
-        hideFormLink.addEventListener('click', () => dom.displayNavBar());
+        displayForm('login');
     },
     displayNavBar: function () {
         const list = document.querySelector('ul');
@@ -48,15 +26,15 @@ export let dom = {
 
         list.appendChild(navbarTemplateClone);
 
-        const registrationButton = document.querySelector('#registration');
-        const loginButton = document.querySelector('#login');
+        const registrationLink = document.querySelector('#register');
+        const loginLink = document.querySelector('#login');
 
-        if (typeof (registrationButton) != 'undefined' && registrationButton != null) {
-            registrationButton.addEventListener('click', () => dom.displayRegistrationForm());
+        if (typeof (registrationLink) != 'undefined' && registrationLink != null) {
+            registrationLink.addEventListener('click', () => dom.displayRegistrationForm());
         }
 
-        if (typeof (loginButton) != 'undefined' && loginButton != null) {
-            loginButton.addEventListener('click', () => dom.displayLoginForm())
+        if (typeof (loginLink) != 'undefined' && loginLink != null) {
+            loginLink.addEventListener('click', () => dom.displayLoginForm())
         }
     },
     clearBoardContainer: function () {
@@ -251,6 +229,26 @@ export let dom = {
     },
     // here comes more features
 };
+
+function displayForm(type) {
+    // this function should only be called by dom.displayRegistrationForm and dom.displayLoginForm
+    if (type !== 'register' && type !== 'login') {
+        throw 'Invalid argument provided for parameter "type"!';
+    }
+
+    const list = document.querySelector('ul');
+
+    list.innerHTML = '';
+
+    const formTemplate = document.querySelector(`#${type}-form-template`);
+    const formTemplateClone = document.importNode(formTemplate.content, true);
+
+    list.appendChild(formTemplateClone);
+
+    const hideFormLink = document.querySelector('#hide-form');
+
+    hideFormLink.addEventListener('click', () => dom.displayNavBar());
+}
 
 function renderElement(id, title, type) {
     // this function can only be called by the renderBoard and renderCard methods of the dom object
