@@ -77,6 +77,20 @@ def remove_card():
     return ok_200(f'card #{card_id} was successfully removed')
 
 
+@app.route("/update-card-position", methods=["POST"])
+@json_response
+def update_card_position():
+    data = request.get_json()
+    for table in ('card', 'board', 'status'):
+        if f'{table}Id' not in data:
+            return error_403(f'no {table} id received')
+    card_id = data['cardId']
+    board_id = data['boardId']
+    status_id = data['statusId']
+    data_handler.update_card_position(card_id, board_id, status_id)
+    return ok_200(f' card {card_id} was successfully updated')
+
+
 @app.route("/register", methods=["POST"])
 @json_response
 def register_user():

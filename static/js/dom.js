@@ -253,8 +253,19 @@ function onDrop(e) {
 
     const cardId = e.dataTransfer.getData('text');
     const card = document.querySelector(`[data-card-id="${cardId}"]`);
-    const targetColumn = e.target.closest('.board-column');
-    const cardContainer = targetColumn.querySelector('.board-column-content');
 
-    cardContainer.appendChild(card);
+    const targetColumn = e.target.closest('.board-column');
+    const board = targetColumn.closest('.board');
+    const boardId = board.dataset.boardId;
+
+    const cardContainer = targetColumn.querySelector('.board-column-content');
+    const statusId = cardContainer.dataset.columnType;
+
+    dataHandler.updateCardPosition(cardId, boardId, statusId, function (response) {
+        if (response.status === 200) {
+            cardContainer.appendChild(card);
+        } else {
+            console.log(response.body['message']);
+        }
+    });
 }

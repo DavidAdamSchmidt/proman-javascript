@@ -87,6 +87,15 @@ export let dataHandler = {
             callback(dataObject.id, response)
         });
     },
+    updateCardPosition: function (cardId, boardId, statusId, callback) {
+        const data = JSON.stringify( {
+            cardId: cardId,
+            boardId: boardId,
+            statusId: statusId
+        });
+
+        this._api_post('/update-card-position', data, callback)
+    },
     renameBoard: function (newName, boardId, callback) {
         let data = JSON.stringify({
             title: newName,

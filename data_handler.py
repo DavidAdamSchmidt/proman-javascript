@@ -82,6 +82,21 @@ def remove_card(cursor, card_id):
         ''', {'card_id': card_id})
 
 
+@connection.connection_handler
+def update_card_position(cursor, card_id, board_id, status_id):
+    cursor.execute(
+        '''
+        UPDATE card
+        SET board_id = %(board_id)s,
+            status_id = (
+                SELECT id
+                FROM status s
+                WHERE s.title = %(status_id)s
+            )
+        WHERE id = %(card_id)s
+        ''', {'card_id': card_id, 'board_id': board_id, 'status_id': status_id})
+
+
 def get_highest_card_id():
     result = get_highest_id('card')
     if result:
