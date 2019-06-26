@@ -21,12 +21,19 @@
         <script type="module" src="{{ url_for('static', filename='js/main.js') }}" defer></script>
     </head>
     <body>
-        <form>
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" minlength="5" maxlength="20" required>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" minlength="5" maxlength="30" required>
-            <input type="button" id="register" value="Register">
+        <form action="{{ url_for('register_user') }}" method="post">
+            <label for="registration-username">Username:</label>
+            <input type="text" id="registration-username" name="username" minlength="5" maxlength="20" required>
+            <label for="registration-password">Password:</label>
+            <input type="password" id="registration-password" name="password" minlength="5" maxlength="30" required>
+            <input type="submit" id="register" value="Register">
+        </form>
+        <form action="{{ url_for('login_user') }}" method="post">
+            <label for="login-username">Username:</label>
+            <input type="text" id="login-username" name="username" minlength="5" maxlength="20" required>
+            <label for="login-password">Password:</label>
+            <input type="password" id="login-password" name="password" minlength="5" maxlength="30" required>
+            <input type="submit" id="login" value="Login">
         </form>
         <h1>ProMan</h1>
         <button class="board-add">Add new board</button>

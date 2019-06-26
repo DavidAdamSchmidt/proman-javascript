@@ -103,17 +103,6 @@ export let dataHandler = {
         });
 
         this._api_post('/rename-board', data, callback);
-    },
-    registerUser: function (callback) {
-        const username = document.querySelector('#username').value;
-        const password = document.querySelector('#password').value;
-
-        const data = JSON.stringify({
-            username: username,
-            password: password
-        });
-
-        this._api_post('/register', data, callback)
     }
     // here comes more features
 };

@@ -8,6 +8,17 @@ def hash_password(plain_text_password):
     return hashed_bytes.decode('utf-8')
 
 
+def verify_password(plain_text_password, hashed_password):
+    hashed_bytes_password = hashed_password.encode('utf-8')
+    return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
+
+
+def is_valid_password(username, password):
+    hashed_password = get_hashed_password(username)
+    passwords_matches = verify_password(password, hashed_password)
+    return passwords_matches
+
+
 @connection.connection_handler
 def get_boards(cursor):
     cursor.execute(
@@ -137,3 +148,30 @@ def register_user(cursor, username, password):
         INSERT INTO account(username, password)
         VALUES (%(username)s, %(password)s)
         ''', {'username': username, 'password': hashed_password})
+
+
+@connection.connection_handler
+def login_user(cursor, username):
+    cursor.execute(
+        '''
+        SELECT id
+        FROM account
+        WHERE username = %(username)s
+        ''', {'username': username})
+
+    result = cursor.fetchone()
+    if result:
+        return result['id']
+
+
+@connection.connection_handler
+def get_hashed_password(cursor, username):
+    cursor.execute('''
+                   SELECT password
+                   FROM account
+                   WHERE username = %(username)s
+                   ''', {'username': username})
+
+    result = cursor.fetchone()
+    if result:
+        return result['password']
