@@ -186,7 +186,11 @@ export let dom = {
         const removeIcon = document.querySelector(`[data-card-id="${cardId}"] div i`);
 
         removeIcon.addEventListener('click', e => dom.removeCard(e));
-        addDragAndDrop([cardContainer.lastElementChild]);
+
+        const card = cardContainer.lastElementChild;
+
+        card.draggable = true;
+        card.addEventListener('dragstart', e => onDrag(e))
     },
     removeCard: function (e) {
         e.stopImmediatePropagation();
