@@ -30,7 +30,10 @@ def get_boards():
 @app.route("/create-board", methods=["POST"])
 @json_response
 def add_board():
-    data_handler.add_board()
+    if 'id' in session:
+        data_handler.add_board(session['id'])
+    else:
+        data_handler.add_board()
     board_id = data_handler.get_highest_board_id()
     return {'board_id': board_id}
 

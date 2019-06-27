@@ -34,12 +34,12 @@ def get_boards(cursor, user_id=None):
 
 
 @connection.connection_handler
-def add_board(cursor):
+def add_board(cursor, user_id=None):
     cursor.execute(
         '''
-        INSERT INTO board(title)
-        VALUES(NULL)
-        ''')
+        INSERT INTO board(title, user_id)
+        VALUES(NULL, %(user_id)s)
+        ''', {'user_id': user_id})
 
 
 @connection.connection_handler
