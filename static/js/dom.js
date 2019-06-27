@@ -6,6 +6,12 @@ export let dom = {
         // This function should run once, when the page is loaded.
         dom.displayNavBar();
 
+        const removeAlertButton = document.querySelector('.close-alert');
+
+        if (typeof (removeAlertButton) != 'undefined' && removeAlertButton != null) {
+            removeAlertButton.addEventListener('click', e => dom.removeAlert(e));
+        }
+
         const addBoardButton = document.querySelector('.board-add');
 
         addBoardButton.addEventListener('click', e => dom.addBoard(e));
@@ -36,6 +42,9 @@ export let dom = {
     },
     displayLoginForm: function () {
         displayForm('login');
+    },
+    removeAlert: function (e) {
+        e.target.closest('.alert').remove();
     },
     clearBoardContainer: function () {
         const boardContainer = document.querySelector('.board-container');
