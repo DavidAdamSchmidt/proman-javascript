@@ -22,6 +22,12 @@
     </head>
     <body>
         <div class="navbar-container"></div>
+        {% if message %}
+            <div class="alert">
+                <span class="close-alert" >&times;</span>
+                <strong>Error:</strong> {{ message }}
+            </div>
+        {% endif %}
         <h1>ProMan</h1>
         <button class="board-add">Add new board</button>
         <div class="board-container">Boards are loading...</div>

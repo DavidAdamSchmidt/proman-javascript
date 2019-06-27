@@ -112,35 +112,35 @@ def update_card_position():
 @app.route("/register", methods=["POST"])
 def register_user():
     form = request.form
-    if 'username' not in form:
-        return render_template('index.html')  # TODO
-    if 'password' not in form:
-        return render_template('index.html')  # TODO
+    if 'username' not in form or 'password' not in form:
+        message = 'Invalid registration credentials!'
+        return render_template('index.html', message=message)
     username = form['username']
     password = form['password']
     user_exists = data_handler.check_if_user_exists(username)
     if user_exists:
-        return render_template('index.html')  # TODO
+        message = 'Username already taken!'
+        return render_template('index.html', message=message)
     data_handler.register_user(username, password)
-    return redirect(url_for('index'))
+    return render_template('index.html')
 
 
 @app.route("/login", methods=["POST"])
 def login_user():
     form = request.form
-    if 'username' not in form:
-        return render_template('index.html')  # TODO
-    if 'password' not in form:
-        return render_template('index.html')  # TODO
+    if 'username' not in form or 'password' not in form:
+        message = 'Invalid registration credentials!'
+        return render_template('index.html', message=message)
     username = form['username']
     password = form['password']
     valid_password = data_handler.is_valid_password(username, password)
-    if valid_password:
-        user_id = data_handler.login_user(username)
-        if user_id:
-            session['id'] = user_id
-            session['username'] = username
-    return redirect(url_for('index'))
+    if not valid_password:
+        message = 'Invalid username or password!'
+        return render_template('index.html', message=message)
+    user_id = data_handler.login_user(username)
+    session['id'] = user_id
+    session['username'] = username
+    return render_template('index.html')
 
 
 @app.route('/logout')
