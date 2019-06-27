@@ -127,6 +127,10 @@ export let dom = {
             column.addEventListener('drop', e => onDrop(e));
         }
 
+        const removeButton = board.querySelector('.board-remove');
+
+        removeButton.addEventListener('click', (e) => dom.removeBoard(e));
+
         titleContainer.click();
 
         const addBoardButton = document.querySelector('.board-add');
