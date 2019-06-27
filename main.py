@@ -22,6 +22,8 @@ def get_boards():
     """
     All the boards
     """
+    if 'id' in session:
+        return data_handler.get_boards(session['id'])
     return data_handler.get_boards()
 
 
@@ -130,6 +132,7 @@ def login_user():
 @app.route('/logout')
 def logout_user():
     session.pop('username', None)
+    session.pop('id', None)
     return redirect(url_for('index'))
 
 

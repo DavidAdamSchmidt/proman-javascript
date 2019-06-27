@@ -20,13 +20,15 @@ def is_valid_password(username, password):
 
 
 @connection.connection_handler
-def get_boards(cursor):
+def get_boards(cursor, user_id=None):
     cursor.execute(
         '''
         SELECT *
         FROM board
+        WHERE user_id = %(user_id)s
+           OR user_id ISNULL
         ORDER BY id
-        ''')
+        ''', {'user_id': user_id})
 
     return cursor.fetchall()
 
