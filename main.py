@@ -122,7 +122,7 @@ def register_user():
         flash('Username already taken!')
         return redirect(url_for('index'))
     data_handler.register_user(username, password)
-    return render_template('index.html')
+    return redirect(url_for('index'))
 
 
 @app.route('/login', methods=['POST'])
