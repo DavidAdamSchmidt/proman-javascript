@@ -44,7 +44,7 @@
 {% for type in ('register', 'login') %}
     <template id="{{ type }}-form-template">
         <ul>
-            <li><a class="li-left" id="hide-form" href="#">Hide form</a></li>
+            <li><a class="li-left" id="hide-form" href="#">Cancel</a></li>
             <li class="li-right">
                 {% set endpoint = type + '_user' %}
                 <form action="{{ url_for(endpoint) }}" method="post">

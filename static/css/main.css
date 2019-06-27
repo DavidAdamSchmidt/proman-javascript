@@ -163,6 +163,10 @@ li a, li form, li span {
     text-decoration: none;
 }
 
+li form {
+    margin-top: -3px;
+}
+
 /* Change the link color to #111 (black) on hover */
 li a:hover {
     background-color: #111;
