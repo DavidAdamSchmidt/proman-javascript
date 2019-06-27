@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, session, redirect
+from flask import Flask, render_template, url_for, request, session, redirect, flash
 from util import json_response, ok_200, error_403
 import os
 import data_handler
@@ -113,14 +113,14 @@ def update_card_position():
 def register_user():
     form = request.form
     if 'username' not in form or 'password' not in form:
-        message = 'Invalid registration credentials!'
-        return render_template('index.html', message=message)
+        flash('Invalid registration credentials!')
+        return redirect(url_for('index'))
     username = form['username']
     password = form['password']
     user_exists = data_handler.check_if_user_exists(username)
     if user_exists:
-        message = 'Username already taken!'
-        return render_template('index.html', message=message)
+        flash('Username already taken!')
+        return redirect(url_for('index'))
     data_handler.register_user(username, password)
     return render_template('index.html')
 
@@ -129,22 +129,23 @@ def register_user():
 def login_user():
     form = request.form
     if 'username' not in form or 'password' not in form:
-        message = 'Invalid registration credentials!'
-        return render_template('index.html', message=message)
+        flash('Invalid registration credentials!')
+        return redirect(url_for('index'))
     username = form['username']
     password = form['password']
     user_exists = data_handler.check_if_user_exists(username)
+    message = 'Invalid username or password!'
     if not user_exists:
-        message = 'Invalid username or password!'
-        return render_template('index.html', message=message)
+        flash(message)
+        return redirect(url_for('index'))
     valid_password = data_handler.is_valid_password(username, password)
     if not valid_password:
-        message = 'Invalid username or password!'
-        return render_template('index.html', message=message)
+        flash(message)
+        return redirect(url_for('index'))
     user_id = data_handler.login_user(username)
     session['id'] = user_id
     session['username'] = username
-    return render_template('index.html')
+    return redirect(url_for('index'))
 
 
 @app.route('/logout')

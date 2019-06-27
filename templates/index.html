@@ -22,12 +22,16 @@
     </head>
     <body>
         <div class="navbar-container"></div>
-        {% if message %}
-            <div class="alert">
-                <span class="close-alert" >&times;</span>
-                <strong>Error:</strong> {{ message }}
-            </div>
-        {% endif %}
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert">
+                        <span class="close-alert" >&times;</span>
+                        <strong>Error:</strong> {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         <h1>ProMan</h1>
         <button class="board-add">Add new board</button>
         <div class="board-container">Boards are loading...</div>
