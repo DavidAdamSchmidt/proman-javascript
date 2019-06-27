@@ -63,13 +63,20 @@ section.board{
     display: inline-block;
     font-size: 20px;
 }
-.board-title, .board-add, .board-toggle{
+.board-title, .board-add, .board-toggle, .board-remove{
     display: inline-block;
+}
+
+.board-remove{
+    float: right;
+    margin-top: 13px;
 }
 
 .board-toggle{
     float: right;
-    margin: 13px;
+    margin-top: 13px;
+    margin-left: 13px;
+    margin-right: 13px;
 }
 
 .board-columns{

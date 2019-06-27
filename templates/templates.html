@@ -4,6 +4,7 @@
         <div class="board-header"><span class="board-title">{{title}}</span>
             <button class="board-add">Add Card</button>
             <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
+            <button class="board-remove"><i class="fas fa-trash-alt"></i></button>
         </div>
         <div class="board-columns">
             <div class="board-column">
@@ -28,8 +29,7 @@
 
 <script id="card-template" type="text/x-handlebars-template">
     <div class="card" data-card-id="{{id}}">
-        <div class="card-remove"><i class="fas fa-trash-alt"></i>
-        </div>
+        <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
         <div class="card-title">{{title}}</div>
     </div>
 </script>
