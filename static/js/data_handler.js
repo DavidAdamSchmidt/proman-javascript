@@ -32,8 +32,6 @@ export let dataHandler = {
         .then(data => ({status: response.status, body: data})))
         .then(statusAndData => callback(statusAndData));
     },
-    init: function () {
-    },
     getBoards: function (callback) {
         // the boards are retrieved and then the callback function is called with the boards
         // Here we use an arrow function to keep the value of 'this' on dataHandler.
@@ -43,30 +41,19 @@ export let dataHandler = {
             callback(response);
         });
     },
-    getBoard: function (boardId, callback) {
-        // the board is retrieved and then the callback function is called with the board
-    },
-    getStatuses: function (callback) {
-        // the statuses are retrieved and then the callback function is called with the statuses
-    },
-    getStatus: function (statusId, callback) {
-        // the status is retrieved and then the callback function is called with the status
-    },
-    getCardsByBoardId: function (boardId, callback) {
-        // the cards are retrieved and then the callback function is called with the cards
-        this._api_get(`/get-cards/${boardId}`, (response) => {
-            this._data = response;
-            callback(response);
-        });
-    },
-    getCard: function (cardId, callback) {
-        // the card is retrieved and then the callback function is called with the card
-    },
     createNewBoard: function (callback) {
         // creates new board, saves it and calls the callback function with its data
         const data = JSON.stringify({});
 
         this._api_post('/create-board', data, callback);
+    },
+    renameBoard: function (newName, boardId, callback) {
+        const data = JSON.stringify({
+            title: newName,
+            id: boardId,
+        });
+
+        this._api_post('/rename-board', data, callback);
     },
     removeBoard: function (boardId, callback) {
         const data = JSON.stringify( {
@@ -75,6 +62,13 @@ export let dataHandler = {
 
         this._api_post('/remove-board', data, callback);
     },
+    getCardsByBoardId: function (boardId, callback) {
+        // the cards are retrieved and then the callback function is called with the cards
+        this._api_get(`/get-cards/${boardId}`, (response) => {
+            this._data = response;
+            callback(response);
+        });
+    },
     createNewCard: function (boardId, callback) {
         // creates new card, saves it and calls the callback function with its data
         const data = JSON.stringify({
@@ -82,6 +76,15 @@ export let dataHandler = {
         });
 
         this._api_post('/create-card', data, callback);
+    },
+    updateCardPosition: function (cardId, boardId, statusId, callback) {
+        const data = JSON.stringify( {
+            cardId: cardId,
+            boardId: boardId,
+            statusId: statusId
+        });
+
+        this._api_post('/update-card-position', data, callback)
     },
     removeCard: function (cardId, callback) {
         const data = JSON.stringify({
@@ -94,22 +97,20 @@ export let dataHandler = {
             callback(dataObject.id, response)
         });
     },
-    updateCardPosition: function (cardId, boardId, statusId, callback) {
-        const data = JSON.stringify( {
-            cardId: cardId,
-            boardId: boardId,
-            statusId: statusId
-        });
-
-        this._api_post('/update-card-position', data, callback)
+    // unused methods
+    init: function () {
     },
-    renameBoard: function (newName, boardId, callback) {
-        const data = JSON.stringify({
-            title: newName,
-            id: boardId,
-        });
-
-        this._api_post('/rename-board', data, callback);
-    }
+    getBoard: function (boardId, callback) {
+        // the board is retrieved and then the callback function is called with the board
+    },
+    getCard: function (cardId, callback) {
+        // the card is retrieved and then the callback function is called with the card
+    },
+    getStatus: function (statusId, callback) {
+        // the status is retrieved and then the callback function is called with the status
+    },
+    getStatuses: function (callback) {
+        // the statuses are retrieved and then the callback function is called with the statuses
+    },
     // here comes more features
 };
