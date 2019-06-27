@@ -91,7 +91,7 @@ def add_card(cursor, board_id):
     cursor.execute(
         '''
         INSERT INTO card(board_id, status_id, position)
-        VALUES(%(board_id)s, 0, 0)
+        VALUES(%(board_id)s, 1, 0)
         ''', {'board_id': board_id})
 
 
