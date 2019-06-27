@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.secret_key = environ.get('SECRET_KEY')
 
 
-@app.route("/")
+@app.route('/')
 def index():
     """
     This is a one-pager which shows all the boards and cards
@@ -16,7 +16,7 @@ def index():
     return render_template('index.html')
 
 
-@app.route("/get-boards")
+@app.route('/get-boards')
 @json_response
 def get_boards():
     """
@@ -27,7 +27,7 @@ def get_boards():
     return data_handler.get_boards()
 
 
-@app.route("/create-board", methods=["POST"])
+@app.route('/create-board', methods=['POST'])
 @json_response
 def add_board():
     if 'id' in session:
@@ -38,7 +38,7 @@ def add_board():
     return {'board_id': board_id}
 
 
-@app.route("/remove-board", methods=["POST"])
+@app.route('/remove-board', methods=['POST'])
 @json_response
 def remove_board():
     data = request.get_json()
@@ -49,7 +49,7 @@ def remove_board():
     return ok_200(f'board {board_id} was successfully removed')
 
 
-@app.route("/rename-board", methods=["POST"])
+@app.route('/rename-board', methods=['POST'])
 @json_response
 def rename_board():
     data = request.get_json()
@@ -63,7 +63,7 @@ def rename_board():
     return ok_200(f'title of board #{board_id} was successfully updated')
 
 
-@app.route("/get-cards/<int:board_id>")
+@app.route('/get-cards/<int:board_id>')
 @json_response
 def get_cards_for_board(board_id: int):
     """
@@ -73,7 +73,7 @@ def get_cards_for_board(board_id: int):
     return data_handler.get_cards_for_board(board_id)
 
 
-@app.route("/create-card", methods=["POST"])
+@app.route('/create-card', methods=['POST'])
 @json_response
 def add_card():
     data = request.get_json()
@@ -84,7 +84,7 @@ def add_card():
     return {'card_id': card_id}
 
 
-@app.route("/remove-card", methods=["POST"])
+@app.route('/remove-card', methods=['POST'])
 @json_response
 def remove_card():
     data = request.get_json()
@@ -95,7 +95,7 @@ def remove_card():
     return ok_200(f'card #{card_id} was successfully removed')
 
 
-@app.route("/update-card-position", methods=["POST"])
+@app.route('/update-card-position', methods=['POST'])
 @json_response
 def update_card_position():
     data = request.get_json()
@@ -109,7 +109,7 @@ def update_card_position():
     return ok_200(f' card {card_id} was successfully updated')
 
 
-@app.route("/register", methods=["POST"])
+@app.route('/register', methods=['POST'])
 def register_user():
     form = request.form
     if 'username' not in form or 'password' not in form:
@@ -125,7 +125,7 @@ def register_user():
     return render_template('index.html')
 
 
-@app.route("/login", methods=["POST"])
+@app.route('/login', methods=['POST'])
 def login_user():
     form = request.form
     if 'username' not in form or 'password' not in form:
