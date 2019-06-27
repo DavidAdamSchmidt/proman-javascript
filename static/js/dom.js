@@ -77,7 +77,7 @@ export let dom = {
         const buttons = document.querySelectorAll('.board-add');
 
         for (let button of buttons) {
-            button.addEventListener('click', e => dom.addCard(e));
+            button.addEventListener('mousedown', e => dom.addCard(e));
         }
 
         const boardTitles = document.querySelectorAll('.board-title');
@@ -123,7 +123,7 @@ export let dom = {
         const addCardButton = document.querySelector(`[data-board-id="${boardId}"] .board-add`);
 
         titleContainer.addEventListener('click', e => dom.renameBoard(e));
-        addCardButton.addEventListener('click', e => dom.addCard(e));
+        addCardButton.addEventListener('mousedown', e => dom.addCard(e));
 
         const board = titleContainer.closest('.board');
         const columns = board.querySelectorAll('.board-column');
