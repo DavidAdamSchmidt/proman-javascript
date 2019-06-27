@@ -10,21 +10,15 @@ export let dom = {
 
         addBoardButton.addEventListener('click', e => dom.addBoard(e));
     },
-    displayRegistrationForm: function () {
-        displayForm('register');
-    },
-    displayLoginForm: function () {
-        displayForm('login');
-    },
     displayNavBar: function () {
-        const list = document.querySelector('ul');
+        const navbarContainer = document.querySelector('.navbar-container');
 
-        list.innerHTML = '';
+        navbarContainer.innerHTML = '';
 
-        const navbarTemplate = document.querySelector('#navbar-template');
-        const navbarTemplateClone = document.importNode(navbarTemplate.content, true);
+        const navBarTemplate = document.querySelector('#navbar-template');
+        const navBarTemplateClone = document.importNode(navBarTemplate.content, true);
 
-        list.appendChild(navbarTemplateClone);
+        navbarContainer.appendChild(navBarTemplateClone);
 
         const registrationLink = document.querySelector('#register');
         const loginLink = document.querySelector('#login');
@@ -36,6 +30,12 @@ export let dom = {
         if (typeof (loginLink) != 'undefined' && loginLink != null) {
             loginLink.addEventListener('click', () => dom.displayLoginForm())
         }
+    },
+    displayRegistrationForm: function () {
+        displayForm('register');
+    },
+    displayLoginForm: function () {
+        displayForm('login');
     },
     clearBoardContainer: function () {
         const boardContainer = document.querySelector('.board-container');
@@ -236,14 +236,14 @@ function displayForm(type) {
         throw 'Invalid argument provided for parameter "type"!';
     }
 
-    const list = document.querySelector('ul');
+    const navbarContainer = document.querySelector('.navbar-container');
 
-    list.innerHTML = '';
+    navbarContainer.innerHTML = '';
 
     const formTemplate = document.querySelector(`#${type}-form-template`);
     const formTemplateClone = document.importNode(formTemplate.content, true);
 
-    list.appendChild(formTemplateClone);
+    navbarContainer.appendChild(formTemplateClone);
 
     const hideFormLink = document.querySelector('#hide-form');
 

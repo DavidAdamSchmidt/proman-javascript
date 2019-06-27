@@ -43,26 +43,32 @@
 
 {% for type in ('register', 'login') %}
     <template id="{{ type }}-form-template">
-        <li><a class="li-left" id="hide-form" href="#">Hide form</a></li>
-        <li class="li-right">
-            {% set endpoint = type + '_user' %}
-            <form action="{{ url_for(endpoint) }}" method="post">
-                <label for="{{ type }}-username">Username:</label>
-                <input type="text" id="{{ type }}-username" name="username" minlength="5" maxlength="20" required>
-                <label for="{{ type }}-password">Password:</label>
-                <input type="password" id="{{ type }}-password" name="password" minlength="5" maxlength="30" required>
-                <input type="submit" id="{{ type }}" value="{{ type.capitalize() }}">
-            </form>
-        </li>
+        <ul>
+            <li><a class="li-left" id="hide-form" href="#">Hide form</a></li>
+            <li class="li-right">
+                {% set endpoint = type + '_user' %}
+                <form action="{{ url_for(endpoint) }}" method="post">
+                    <label for="{{ type }}-username">Username:</label>
+                    <input type="text" id="{{ type }}-username" name="username" minlength="5" maxlength="20"
+                           required>
+                    <label for="{{ type }}-password">Password:</label>
+                    <input type="password" id="{{ type }}-password" name="password" minlength="5" maxlength="30"
+                           required>
+                    <input type="submit" id="{{ type }}" value="{{ type.capitalize() }}">
+                </form>
+            </li>
+        </ul>
     </template>
 {% endfor %}
 
 <template id="navbar-template">
-    {% if 'username' in session %}
-        <li class="li-right"><a href="{{ url_for('logout_user') }}">Logout</a></li>
-        <li class="li-right"><span>Logged in as <strong>{{ session.username }}</strong></span></li>
-    {% else %}
-        <li class="li-right" id="register"><a href="#">Register</a></li>
-        <li class="li-right" id="login"><a href="#">Login</a></li>
-    {% endif %}
+    <ul>
+        {% if 'username' in session %}
+            <li class="li-right"><a href="{{ url_for('logout_user') }}">Logout</a></li>
+            <li class="li-right"><span>Logged in as <strong>{{ session.username }}</strong></span></li>
+        {% else %}
+            <li class="li-right" id="register"><a href="#">Register</a></li>
+            <li class="li-right" id="login"><a href="#">Login</a></li>
+        {% endif %}
+    </ul>
 </template>
