@@ -105,7 +105,7 @@ export let dom = {
         dataHandler.createNewBoard(
             function (response) {
                 if (response.status === 200) {
-                    dom.showBoard(response.body['board_id']);
+                    dom.showBoard(response.body.boardId);
                 } else {
                     console.log('There was an error while connecting to the database');
                 }
@@ -186,7 +186,12 @@ export let dom = {
                 if (response.status === 200) {
                     titleContainer.innerHTML = newTitle;
                 } else {
-                    console.log('There was an error while connecting to the database');
+                    if (response.body.message) {
+                        console.log(response.body.message)
+                    } else {
+                        console.log('There was an error while connecting to the database');
+                    }
+
                     titleContainer.innerHTML = oldTitle;
                 }
             })
@@ -199,8 +204,10 @@ export let dom = {
         dataHandler.removeBoard(boardId, function (response) {
             if (response.status === 200) {
                 board.remove();
-            } else {
+            } else if (response.body.message) {
                 console.log(response.body.message);
+            } else {
+                console.log('There was an error while connecting to the database');
             }
         });
     },
@@ -243,7 +250,9 @@ export let dom = {
             `${board.dataset.boardId}`,
             function (response) {
                 if (response.status === 200) {
-                    dom.showCard(boardId, response.body['card_id']);
+                    dom.showCard(boardId, response.body.cardId);
+                } else if (response.body.message) {
+                    console.log(response.body.message);
                 } else {
                     console.log('There was an error while connecting to the database');
                 }
@@ -354,8 +363,10 @@ function onDrop(e) {
     dataHandler.updateCardPosition(cardId, boardId, statusId, function (response) {
         if (response.status === 200) {
             cardContainer.appendChild(card);
+        } else if (response.body.message) {
+            console.log(response.body.message);
         } else {
-            console.log(response.body['message']);
+            console.log('There was an error while connecting to the database');
         }
     });
 }

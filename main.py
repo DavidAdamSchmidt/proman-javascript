@@ -35,7 +35,7 @@ def add_board():
     else:
         data_handler.add_board()
     board_id = data_handler.get_highest_board_id()
-    return {'board_id': board_id}
+    return {'boardId': board_id}
 
 
 @app.route('/remove-board', methods=['POST'])
@@ -81,7 +81,7 @@ def add_card():
         return error_403('no id received')
     data_handler.add_card(data['board_id'])
     card_id = data_handler.get_highest_card_id()
-    return {'card_id': card_id}
+    return {'cardId': card_id}
 
 
 @app.route('/remove-card', methods=['POST'])
