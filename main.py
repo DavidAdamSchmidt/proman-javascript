@@ -133,6 +133,10 @@ def login_user():
         return render_template('index.html', message=message)
     username = form['username']
     password = form['password']
+    user_exists = data_handler.check_if_user_exists(username)
+    if not user_exists:
+        message = 'Invalid username or password!'
+        return render_template('index.html', message=message)
     valid_password = data_handler.is_valid_password(username, password)
     if not valid_password:
         message = 'Invalid username or password!'
