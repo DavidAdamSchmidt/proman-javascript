@@ -68,6 +68,13 @@ export let dataHandler = {
 
         this._api_post('/create-board', data, callback);
     },
+    removeBoard: function (boardId, callback) {
+        let data = JSON.stringify( {
+            boardId: boardId
+        });
+
+        this._api_post('/remove-board', data, callback);
+    },
     createNewCard: function (boardId, callback) {
         // creates new card, saves it and calls the callback function with its data
         let data = JSON.stringify({

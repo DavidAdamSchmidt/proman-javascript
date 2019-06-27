@@ -38,6 +38,17 @@ def add_board():
     return {'board_id': board_id}
 
 
+@app.route("/remove-board", methods=["POST"])
+@json_response
+def remove_board():
+    data = request.get_json()
+    if 'boardId' not in data:
+        return error_403('no board id received')
+    board_id = data['boardId']
+    data_handler.remove_board(board_id)
+    return ok_200(f'board {board_id} was successfully removed')
+
+
 @app.route("/rename-board", methods=["POST"])
 @json_response
 def rename_board():

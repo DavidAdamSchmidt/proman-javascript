@@ -43,6 +43,16 @@ def add_board(cursor, user_id=None):
 
 
 @connection.connection_handler
+def remove_board(cursor, board_id):
+    cursor.execute(
+        '''
+        DELETE
+        FROM board
+        WHERE id = %(board_id)s
+        ''', {'board_id': board_id})
+
+
+@connection.connection_handler
 def rename_board(cursor, board_id, new_title):
     cursor.execute(
         '''

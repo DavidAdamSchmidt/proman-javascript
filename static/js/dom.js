@@ -164,8 +164,15 @@ export let dom = {
     },
     removeBoard: function (e) {
         const board = e.target.closest('.board');
+        const boardId = board.dataset.boardId;
 
-        board.remove();
+        dataHandler.removeBoard(boardId, function (response) {
+            if (response.status === 200) {
+                board.remove();
+            } else {
+                console.log(response.body.message);
+            }
+        });
     },
     renderCard: function (id, title) {
         return renderElement(id, title, 'card');
