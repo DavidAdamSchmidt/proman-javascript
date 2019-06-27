@@ -64,12 +64,12 @@ export let dataHandler = {
     },
     createNewBoard: function (callback) {
         // creates new board, saves it and calls the callback function with its data
-        let data = JSON.stringify({});
+        const data = JSON.stringify({});
 
         this._api_post('/create-board', data, callback);
     },
     removeBoard: function (boardId, callback) {
-        let data = JSON.stringify( {
+        const data = JSON.stringify( {
             boardId: boardId
         });
 
@@ -77,14 +77,14 @@ export let dataHandler = {
     },
     createNewCard: function (boardId, callback) {
         // creates new card, saves it and calls the callback function with its data
-        let data = JSON.stringify({
+        const data = JSON.stringify({
             board_id: boardId,
         });
 
         this._api_post('/create-card', data, callback);
     },
     removeCard: function (cardId, callback) {
-        let data = JSON.stringify({
+        const data = JSON.stringify({
             id: cardId,
         });
 
@@ -104,7 +104,7 @@ export let dataHandler = {
         this._api_post('/update-card-position', data, callback)
     },
     renameBoard: function (newName, boardId, callback) {
-        let data = JSON.stringify({
+        const data = JSON.stringify({
             title: newName,
             id: boardId,
         });
