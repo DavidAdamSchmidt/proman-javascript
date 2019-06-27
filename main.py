@@ -77,9 +77,9 @@ def get_cards_for_board(board_id: int):
 @json_response
 def add_card():
     data = request.get_json()
-    if 'board_id' not in data:
+    if 'boardId' not in data:
         return error_403('no id received')
-    data_handler.add_card(data['board_id'])
+    data_handler.add_card(data['boardId'])
     card_id = data_handler.get_highest_card_id()
     return {'cardId': card_id}
 
