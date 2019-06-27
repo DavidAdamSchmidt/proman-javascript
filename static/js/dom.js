@@ -76,6 +76,12 @@ export let dom = {
         for (let title of boardTitles) {
             title.addEventListener('click', e => dom.renameBoard(e));
         }
+
+        const removeButtons = document.querySelectorAll('.board-remove');
+
+        for (let button of removeButtons) {
+            button.addEventListener('click', (e) => dom.removeBoard(e));
+        }
     },
     addBoard: function (e) {
         e.stopImmediatePropagation();
@@ -156,6 +162,11 @@ export let dom = {
             })
         }
     },
+    removeBoard: function (e) {
+        const board = e.target.closest('.board');
+
+        board.remove();
+    },
     renderCard: function (id, title) {
         return renderElement(id, title, 'card');
     },
@@ -177,10 +188,10 @@ export let dom = {
             cardContainer.insertAdjacentHTML('beforeend', newCard);
         }
 
-        const removeIcons = document.querySelectorAll('i');
+        const removeButtons = document.querySelectorAll('.card-remove');
 
-        for (let icon of removeIcons) {
-            icon.addEventListener('click', e => dom.removeCard(e))
+        for (let button of removeButtons) {
+            button.addEventListener('click', e => dom.removeCard(e))
         }
 
         const cardElements = document.querySelectorAll('.card');
