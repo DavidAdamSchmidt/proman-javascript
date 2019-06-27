@@ -6,7 +6,7 @@ function init() {
     dom.init();
     // loads the boards to the screen
     dom.loadBoards(function () {
-        const boards = document.querySelectorAll('section');
+        const boards = document.querySelectorAll('.board');
 
         for (let board of boards) {
             dom.loadCards(board.dataset.boardId)

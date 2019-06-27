@@ -1,11 +1,11 @@
 from flask import Flask, render_template, url_for, request, session, redirect
 from util import json_response, ok_200, error_403
-from os import environ
+import os
 import data_handler
 
 
 app = Flask(__name__)
-app.secret_key = environ.get('SECRET_KEY')
+app.secret_key = os.environ.get('SECRET_KEY')
 
 
 @app.route('/')

@@ -43,16 +43,6 @@ def add_board(cursor, user_id=None):
 
 
 @connection.connection_handler
-def remove_board(cursor, board_id):
-    cursor.execute(
-        '''
-        DELETE
-        FROM board
-        WHERE id = %(board_id)s
-        ''', {'board_id': board_id})
-
-
-@connection.connection_handler
 def rename_board(cursor, board_id, new_title):
     cursor.execute(
         '''
@@ -60,6 +50,16 @@ def rename_board(cursor, board_id, new_title):
         SET title = %(new_title)s
         WHERE id = %(board_id)s
         ''', {'board_id': board_id, 'new_title': new_title})
+
+
+@connection.connection_handler
+def remove_board(cursor, board_id):
+    cursor.execute(
+        '''
+        DELETE
+        FROM board
+        WHERE id = %(board_id)s
+        ''', {'board_id': board_id})
 
 
 def get_highest_board_id():
@@ -96,16 +96,6 @@ def add_card(cursor, board_id):
 
 
 @connection.connection_handler
-def remove_card(cursor, card_id):
-    cursor.execute(
-        '''
-        DELETE
-        FROM card
-        WHERE id = %(card_id)s
-        ''', {'card_id': card_id})
-
-
-@connection.connection_handler
 def update_card_position(cursor, card_id, board_id, status_id):
     cursor.execute(
         '''
@@ -118,6 +108,16 @@ def update_card_position(cursor, card_id, board_id, status_id):
             )
         WHERE id = %(card_id)s
         ''', {'card_id': card_id, 'board_id': board_id, 'status_id': status_id})
+
+
+@connection.connection_handler
+def remove_card(cursor, card_id):
+    cursor.execute(
+        '''
+        DELETE
+        FROM card
+        WHERE id = %(card_id)s
+        ''', {'card_id': card_id})
 
 
 def get_highest_card_id():
@@ -153,6 +153,19 @@ def check_if_user_exists(cursor, username):
 
 
 @connection.connection_handler
+def get_hashed_password(cursor, username):
+    cursor.execute('''
+                   SELECT password
+                   FROM account
+                   WHERE username = %(username)s
+                   ''', {'username': username})
+
+    result = cursor.fetchone()
+    if result:
+        return result['password']
+
+
+@connection.connection_handler
 def register_user(cursor, username, password):
     hashed_password = hash_password(password)
     cursor.execute(
@@ -174,16 +187,3 @@ def login_user(cursor, username):
     result = cursor.fetchone()
     if result:
         return result['id']
-
-
-@connection.connection_handler
-def get_hashed_password(cursor, username):
-    cursor.execute('''
-                   SELECT password
-                   FROM account
-                   WHERE username = %(username)s
-                   ''', {'username': username})
-
-    result = cursor.fetchone()
-    if result:
-        return result['password']

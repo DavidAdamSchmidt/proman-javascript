@@ -50,7 +50,7 @@ export let dataHandler = {
     renameBoard: function (newName, boardId, callback) {
         const data = JSON.stringify({
             title: newName,
-            id: boardId,
+            id: boardId
         });
 
         this._api_post('/rename-board', data, callback);
@@ -72,7 +72,7 @@ export let dataHandler = {
     createNewCard: function (boardId, callback) {
         // creates new card, saves it and calls the callback function with its data
         const data = JSON.stringify({
-            board_id: boardId,
+            board_id: boardId
         });
 
         this._api_post('/create-card', data, callback);
@@ -88,7 +88,7 @@ export let dataHandler = {
     },
     removeCard: function (cardId, callback) {
         const data = JSON.stringify({
-            id: cardId,
+            id: cardId
         });
 
         this._api_post('/remove-card', data, (response) => {
