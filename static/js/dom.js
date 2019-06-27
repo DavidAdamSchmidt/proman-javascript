@@ -89,7 +89,13 @@ export let dom = {
         const removeButtons = document.querySelectorAll('.board-remove');
 
         for (let button of removeButtons) {
-            button.addEventListener('click', (e) => dom.removeBoard(e));
+            button.addEventListener('click', e => dom.removeBoard(e));
+        }
+
+        const toggleButtons = document.querySelectorAll('.board-toggle');
+
+        for (let button of toggleButtons) {
+            button.addEventListener('click', e => dom.toggleBoard(e));
         }
     },
     addBoard: function (e) {
@@ -131,11 +137,22 @@ export let dom = {
 
         removeButton.addEventListener('click', (e) => dom.removeBoard(e));
 
+        const toggleButton = board.querySelector('.board-toggle');
+
+        toggleButton.addEventListener('click', e => dom.toggleBoard(e));
+
         titleContainer.click();
 
         const addBoardButton = document.querySelector('.board-add');
 
         addBoardButton.disabled = false;
+    },
+    toggleBoard: function (e) {
+        const board = e.target.closest('.board');
+        const columnContainer = board.querySelector('.board-columns');
+        const currentDisplayStyle = columnContainer.style.display;
+
+        columnContainer.style.display = currentDisplayStyle === 'flex' ? 'none' : 'flex';
     },
     renameBoard: function (e) {
         const titleContainer = e.target;
